@@ -54,7 +54,7 @@ const name = document.getElementById("name").value;
 const email = document.getElementById("email").value;
 const message = document.getElementById("message").value;
 
-const response = await fetch("/send", {
+const response = await fetch("https://portfolio-backend-8rap.onrender.com/send",  {
     method: "POST",
     headers: {
         "Content-Type": "application/json"
