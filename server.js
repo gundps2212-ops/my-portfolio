@@ -9,12 +9,14 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(__dirname));
 
-app.post("/send", async (req, res) => {
+app.get("/", (req, res) => {
+    res.send("Server Running Successfully");
+});
 
+app.post("/send", async (req, res) => {
     const { name, email, message } = req.body;
 
     try {
-
         const transporter = nodemailer.createTransport({
             service: "gmail",
             auth: {
@@ -29,10 +31,10 @@ app.post("/send", async (req, res) => {
             to: process.env.EMAIL,
             subject: "New Portfolio Message",
             html: `
-            <h2>New Contact Form Submission</h2>
-            <p><b>Name:</b> ${name}</p>
-            <p><b>Email:</b> ${email}</p>
-            <p><b>Message:</b> ${message}</p>
+                <h2>New Contact Form Submission</h2>
+                <p><b>Name:</b> ${name}</p>
+                <p><b>Email:</b> ${email}</p>
+                <p><b>Message:</b> ${message}</p>
             `
         });
 
@@ -44,6 +46,8 @@ app.post("/send", async (req, res) => {
     }
 });
 
-app.listen(3000, () => {
-    console.log("Server Running on Port 3000");
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+    console.log(`Server Running on Port ${PORT}`);
 });
