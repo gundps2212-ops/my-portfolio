@@ -65,27 +65,37 @@ if (contactForm) {
     const message = document.getElementById("message").value;
 
     try {
-      const response = await fetch("https://portfolio-backend-8rap.onrender.com/send", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          name,
-          email,
-          message
-        })
-      });
+     const contactForm = document.getElementById("contactForm");
 
-      const data = await response.json();
+if (contactForm) {
+  contactForm.addEventListener("submit", async function(e) {
+    e.preventDefault();
 
-      alert(data.message);
+    const formData = {
+      access_key: "YOUR_WEB3FORMS_ACCESS_KEY",
+      name: document.getElementById("name").value,
+      email: document.getElementById("email").value,
+      message: document.getElementById("message").value
+    };
 
-      if (response.ok) {
-        contactForm.reset();
-      }
+    const response = await fetch("https://api.web3forms.com/submit", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(formData)
+    });
 
-    } catch (error) {
+    const data = await response.json();
+
+    if (data.success) {
+      alert("Message Sent Successfully");
+      contactForm.reset();
+    } else {
+      alert("Failed to Send Message");
+    }
+  });
+}} catch (error) {
       alert("Server error. Please try again.");
       console.log(error);
     }
