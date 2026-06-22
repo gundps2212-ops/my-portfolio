@@ -26,8 +26,7 @@ function type() {
 
   if (!isDeleting && j <= text[i].length) {
     currentText = text[i].substring(0, j++);
-  } 
-  else if (isDeleting && j >= 0) {
+  } else if (isDeleting && j >= 0) {
     currentText = text[i].substring(0, j--);
   }
 
@@ -53,19 +52,8 @@ function type() {
 
 type();
 
-// Contact Form Submit
+// Contact Form Submit - Web3Forms
 const contactForm = document.getElementById("contactForm");
-
-if (contactForm) {
-  contactForm.addEventListener("submit", async function(e) {
-    e.preventDefault();
-
-    const name = document.getElementById("name").value;
-    const email = document.getElementById("email").value;
-    const message = document.getElementById("message").value;
-
-    try {
-     const contactForm = document.getElementById("contactForm");
 
 if (contactForm) {
   contactForm.addEventListener("submit", async function(e) {
@@ -78,24 +66,25 @@ if (contactForm) {
       message: document.getElementById("message").value
     };
 
-    const response = await fetch("https://api.web3forms.com/submit", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(formData)
-    });
+    try {
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(formData)
+      });
 
-    const data = await response.json();
+      const data = await response.json();
 
-    if (data.success) {
-      alert("Message Sent Successfully");
-      contactForm.reset();
-    } else {
-      alert("Failed to Send Message");
-    }
-  });
-}} catch (error) {
+      if (data.success) {
+        alert("Message Sent Successfully");
+        contactForm.reset();
+      } else {
+        alert("Failed to Send Message");
+      }
+
+    } catch (error) {
       alert("Server error. Please try again.");
       console.log(error);
     }
