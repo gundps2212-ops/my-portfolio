@@ -15,6 +15,7 @@
 <header>
   <nav class="navbar">
     <h2 class="logo">Pratik</h2>
+
     <ul class="nav-links">
       <li><a href="#home">Home</a></li>
       <li><a href="#about">About</a></li>
@@ -26,12 +27,19 @@
 </header>
 
 <!-- ===== HERO SECTION ===== -->
-<section id="home" class="hero">
+<section id="home" class="hero fade">
   <div class="hero-text">
     <h1>Hi, I'm <span>Pratik</span></h1>
-    <h3 class="typing">Aspiring Web Developer</h3>
-    <p>I build modern, responsive and user-friendly websites.</p>
-    <a href="resume.pdf" download class="btn">Download Resume</a>
+
+    <h3 class="typing"></h3>
+
+    <p>
+      I build modern, responsive and user-friendly websites.
+    </p>
+
+    <a href="resume.pdf" download class="btn">
+      Download Resume
+    </a>
   </div>
 
   <div class="hero-img">
@@ -40,76 +48,104 @@
 </section>
 
 <!-- ===== ABOUT SECTION ===== -->
-<section id="about" class="section">
+<section id="about" class="section fade">
   <h2>About Me</h2>
+
   <p>
     I am currently pursuing my second-year Diploma in Information Technology.
     I am passionate about web development and aspire to become a professional
     Web Developer. I enjoy creating responsive, modern, and user-centric
-    web applications. I continuously enhance my technical skills by
+    web applications. I continuously improve my technical skills by
     building real-world projects and learning new technologies.
   </p>
 </section>
 
 <!-- ===== SKILLS SECTION ===== -->
-<section id="skills" class="section">
+<section id="skills" class="section fade">
   <h2>Technical Skills</h2>
+
   <div class="skills">
     <div class="skill">HTML</div>
     <div class="skill">CSS</div>
     <div class="skill">JavaScript</div>
+    <div class="skill">Python</div>
     <div class="skill">C++</div>
     <div class="skill">SQL</div>
   </div>
 </section>
 
 <!-- ===== PROJECTS SECTION ===== -->
-<section id="projects" class="section">
+<section id="projects" class="section fade">
   <h2>Projects</h2>
+
   <div class="projects">
 
     <div class="card">
       <h3>Snake Game</h3>
-      <p>An interactive browser-based game developed using JavaScript.</p>
+      <p>
+        An interactive browser-based game developed using JavaScript.
+      </p>
     </div>
 
     <div class="card">
       <h3>Mini Games Collection</h3>
-      <p>A collection of multiple browser-based games.</p>
+      <p>
+        A collection of multiple browser-based games.
+      </p>
+    </div>
+
+    <div class="card">
+      <h3>Attendance Management System</h3>
+      <p>
+        A web-based attendance tracking system using HTML, CSS and JavaScript.
+      </p>
     </div>
 
     <div class="card">
       <h3>Personal Portfolio Website</h3>
-      <p>A modern animated personal portfolio website.</p>
+      <p>
+        A modern animated personal portfolio website.
+      </p>
     </div>
 
   </div>
 </section>
 
-<!-- ===== CONTACT FORM SECTION ===== -->
-<form class="contact-form" id="contactForm">
+<!-- ===== CONTACT SECTION ===== -->
+<section id="contact" class="section fade">
 
-<input type="text"
-id="name"
-placeholder="Your Name"
-required>
+  <h2>Contact Me</h2>
 
-<input type="email"
-id="email"
-placeholder="Your Email"
-required>
+  <form class="contact-form" id="contactForm">
 
-<textarea
-id="message"
-rows="5"
-placeholder="Your Message"
-required></textarea>
+    <input
+      type="text"
+      id="name"
+      placeholder="Your Name"
+      required
+    >
 
-<button type="submit" class="btn">
-Send Message
-</button>
+    <input
+      type="email"
+      id="email"
+      placeholder="Your Email"
+      required
+    >
 
-</form>
+    <textarea
+      id="message"
+      rows="5"
+      placeholder="Your Message"
+      required
+    ></textarea>
+
+    <button type="submit" class="btn">
+      Send Message
+    </button>
+
+  </form>
+
+</section>
 
 <!-- ===== FOOTER ===== -->
 <footer>
@@ -117,5 +153,6 @@ Send Message
 </footer>
 
 <script src="script.js"></script>
+
 </body>
 </html>
