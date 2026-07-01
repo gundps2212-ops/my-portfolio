@@ -1,92 +1,131 @@
-// Scroll fade animation
+// ==========================
+// Fade Animation on Scroll
+// ==========================
 const faders = document.querySelectorAll(".fade");
 
-window.addEventListener("scroll", () => {
-  faders.forEach(section => {
+function revealSections() {
+  faders.forEach((section) => {
     const position = section.getBoundingClientRect().top;
 
     if (position < window.innerHeight - 100) {
       section.classList.add("show");
     }
   });
-});
+}
 
+window.addEventListener("scroll", revealSections);
+window.addEventListener("load", revealSections);
+
+// ==========================
 // Typing Effect
-const text = ["Junior Full Stack Web Developer", "IT Student"];
-
-let i = 0;
-let j = 0;
-let currentText = "";
-let isDeleting = false;
+// ==========================
+const words = [
+  "Junior Full Stack Web Developer",
+  "Frontend Developer",
+  "IT Student"
+];
 
 const typing = document.querySelector(".typing");
 
-function type() {
+let wordIndex = 0;
+let charIndex = 0;
+let deleting = false;
+
+function typingEffect() {
   if (!typing) return;
 
-  if (!isDeleting && j <= text[i].length) {
-    currentText = text[i].substring(0, j++);
-  } else if (isDeleting && j >= 0) {
-    currentText = text[i].substring(0, j--);
+  const currentWord = words[wordIndex];
+
+  if (!deleting) {
+    typing.textContent = currentWord.substring(0, charIndex++);
+  } else {
+    typing.textContent = currentWord.substring(0, charIndex--);
   }
 
-  typing.innerHTML = currentText;
+  let speed = deleting ? 60 : 120;
 
-  if (j === text[i].length) {
-    isDeleting = true;
-    setTimeout(type, 1000);
-    return;
+  if (!deleting && charIndex > currentWord.length) {
+    deleting = true;
+    speed = 1500;
   }
 
-  if (j === 0) {
-    isDeleting = false;
-    i++;
-
-    if (i === text.length) {
-      i = 0;
-    }
+  if (deleting && charIndex < 0) {
+    deleting = false;
+    wordIndex = (wordIndex + 1) % words.length;
+    speed = 400;
   }
 
-  setTimeout(type, 100);
+  setTimeout(typingEffect, speed);
 }
 
-type();
+typingEffect();
 
-// Contact Form Submit - Web3Forms
+
+// ===========================================
+// Contact Form (Render Backend)
+// ===========================================
+
+// CHANGE THIS TO YOUR RENDER URL
+const BACKEND_URL = "https://portfolio-backend-8rap.onrender.com";
+
 const contactForm = document.getElementById("contactForm");
 
 if (contactForm) {
-  contactForm.addEventListener("submit", async function(e) {
+
+  contactForm.addEventListener("submit", async function (e) {
+
     e.preventDefault();
 
-    const formData = {
-      access_key: "YOUR_WEB3FORMS_ACCESS_KEY",
-      name: document.getElementById("name").value,
-      email: document.getElementById("email").value,
-      message: document.getElementById("message").value
+    const button = contactForm.querySelector("button");
+
+    button.disabled = true;
+    button.innerText = "Sending...";
+
+    const data = {
+      name: document.getElementById("name").value.trim(),
+      email: document.getElementById("email").value.trim(),
+      message: document.getElementById("message").value.trim()
     };
 
     try {
-      const response = await fetch("https://api.web3forms.com/submit", {
+
+      const response = await fetch(`${BACKEND_URL}/send`, {
+
         method: "POST",
+
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify(formData)
+
+        body: JSON.stringify(data)
+
       });
 
-      const data = await response.json();
+      const result = await response.json();
 
-      if (data.success) {
-        alert("Message Sent Successfully");
+      if (response.ok) {
+
+        alert("✅ Message Sent Successfully");
+
         contactForm.reset();
+
       } else {
-        alert("Failed to Send Message");
+
+        alert("❌ " + result.message);
+
       }
 
     } catch (error) {
-      alert("Server error. Please try again.");
-      console.log(error);
+
+      console.error(error);
+
+      alert("❌ Failed to connect to server.");
+
     }
+
+    button.disabled = false;
+    button.innerText = "Send Message";
+
   });
+
 }
