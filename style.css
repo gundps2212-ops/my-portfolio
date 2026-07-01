@@ -1024,7 +1024,6 @@ textarea {
 .profile-placeholder {
   width: 280px;
   height: 280px;
-  border-radius: 50%;
   overflow: hidden;
 
   display: flex;
