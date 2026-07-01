@@ -1009,14 +1009,14 @@ textarea {
   object-position: center top;
   display: block;
 }
-@media (max-width: 768px) {
+@media (max-width: 500px) {
   .profile-placeholder {
     width: 350px;
     height: 400px;
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 300px) {
   .profile-placeholder {
     width: 190px;
     height: 190px;
