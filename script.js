@@ -60,13 +60,11 @@ function typingEffect() {
 
 typingEffect();
 
+// ==========================
+// Contact Form (Web3Forms)
+// ==========================
 
-// ===========================================
-// Contact Form (Render Backend)
-// ===========================================
-
-// CHANGE THIS TO YOUR RENDER URL
-const BACKEND_URL = "https://portfolio-backend-8rap.onrender.com";
+const ACCESS_KEY = "40701f1e-3266-4fd7-8fa4-73c0c2263255";
 
 const contactForm = document.getElementById("contactForm");
 
@@ -79,9 +77,10 @@ if (contactForm) {
     const button = contactForm.querySelector("button");
 
     button.disabled = true;
-    button.innerText = "Sending...";
+    button.innerHTML = "Sending...";
 
-    const data = {
+    const formData = {
+      access_key: ACCESS_KEY,
       name: document.getElementById("name").value.trim(),
       email: document.getElementById("email").value.trim(),
       message: document.getElementById("message").value.trim()
@@ -89,23 +88,24 @@ if (contactForm) {
 
     try {
 
-      const response = await fetch(`${BACKEND_URL}/send`, {
+      const response = await fetch("https://api.web3forms.com/submit", {
 
         method: "POST",
 
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
+          "Accept": "application/json"
         },
 
-        body: JSON.stringify(data)
+        body: JSON.stringify(formData)
 
       });
 
       const result = await response.json();
 
-      if (response.ok) {
+      if (result.success) {
 
-        alert("✅ Message Sent Successfully");
+        alert("✅ Message Sent Successfully!");
 
         contactForm.reset();
 
@@ -119,12 +119,12 @@ if (contactForm) {
 
       console.error(error);
 
-      alert("❌ Failed to connect to server.");
+      alert("❌ Failed to send message.");
 
     }
 
     button.disabled = false;
-    button.innerText = "Send Message";
+    button.innerHTML = "Send Message";
 
   });
 
