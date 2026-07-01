@@ -1,158 +1,455 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pratik | Web Developer</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
+  <title>Pratik Gund | Frontend & Full Stack Developer</title>
+
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="Professional portfolio website of Pratik Gund, Frontend Developer and Full Stack Developer." />
+  <meta name="keywords" content="Pratik Gund, Frontend Developer, Full Stack Developer, Portfolio, Web Developer" />
+  <meta name="author" content="Pratik Gund" />
+
+  <!-- Google Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="style.css" />
 </head>
 
 <body>
-
-<!-- ===== NAVBAR ===== -->
-<header>
-  <nav class="navbar">
-    <h2 class="logo">Pratik</h2>
-
-    <ul class="nav-links">
-      <li><a href="#home">Home</a></li>
-      <li><a href="#about">About</a></li>
-      <li><a href="#skills">Skills</a></li>
-      <li><a href="#projects">Projects</a></li>
-      <li><a href="#contact">Contact</a></li>
-    </ul>
-  </nav>
-</header>
-
-<!-- ===== HERO SECTION ===== -->
-<section id="home" class="hero fade">
-  <div class="hero-text">
-    <h1>Hi, I'm <span>Pratik</span></h1>
-
-    <h3 class="typing"></h3>
-
-    <p>
-      I build modern, responsive and user-friendly websites.
-    </p>
-
-    <a href="resume.pdf" download class="btn">
-      Download Resume
-    </a>
+  <!-- Loading Screen -->
+  <div class="loader" id="loader">
+    <div class="loader-circle"></div>
+    <h2>Pratik Gund</h2>
   </div>
 
-  <div class="hero-img">
-    <img src="images/profile.jpg" alt="Pratik Profile Photo">
-  </div>
-</section>
+  <!-- Navbar -->
+  <header class="header" id="header">
+    <nav class="navbar">
+      <a href="#home" class="logo">Pratik<span>.</span></a>
 
-<!-- ===== ABOUT SECTION ===== -->
-<section id="about" class="section fade">
-  <h2>About Me</h2>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#home" class="nav-link active">Home</a></li>
+        <li><a href="#about" class="nav-link">About</a></li>
+        <li><a href="#skills" class="nav-link">Skills</a></li>
+        <li><a href="#projects" class="nav-link">Projects</a></li>
+        <li><a href="#services" class="nav-link">Services</a></li>
+        <li><a href="#contact" class="nav-link">Contact</a></li>
+      </ul>
 
-  <p>
-    I am currently pursuing my second-year Diploma in Information Technology.
-    I am passionate about web development and aspire to become a professional
-    Web Developer. I enjoy creating responsive, modern, and user-centric
-    web applications. I continuously improve my technical skills by
-    building real-world projects and learning new technologies.
-  </p>
-</section>
+      <button class="menu-btn" id="menuBtn" aria-label="Open Menu">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+    </nav>
+  </header>
 
-<!-- ===== SKILLS SECTION ===== -->
-<section id="skills" class="section fade">
-  <h2>Technical Skills</h2>
+  <!-- Hero Section -->
+  <section class="hero section" id="home">
+    <div class="hero-bg"></div>
 
-  <div class="skills">
-    <div class="skill">HTML</div>
-    <div class="skill">CSS</div>
-    <div class="skill">JavaScript</div>
-    <div class="skill">Python</div>
-    <div class="skill">C++</div>
-    <div class="skill">SQL</div>
-  </div>
-</section>
+    <div class="container hero-container">
+      <div class="hero-content reveal">
+        <p class="badge">
+          <i class="fa-solid fa-code"></i>
+          Available for Web Projects
+        </p>
 
-<!-- ===== PROJECTS SECTION ===== -->
-<section id="projects" class="section fade">
-  <h2>Projects</h2>
+        <h1>
+          Hi, I'm <span>Pratik Gund</span>
+        </h1>
 
-  <div class="projects">
+        <h2>
+          I'm a <span class="typing"></span>
+        </h2>
 
-    <div class="card">
-      <h3>Snake Game</h3>
-      <p>
-        An interactive browser-based game developed using JavaScript.
-      </p>
+        <p class="hero-text">
+          A passionate developer focused on creating modern, responsive,
+          user-friendly, and professional web experiences with clean UI and
+          strong functionality.
+        </p>
+
+        <div class="hero-buttons">
+          <a href="#contact" class="btn primary-btn">
+            Hire Me <i class="fa-solid fa-arrow-right"></i>
+          </a>
+
+          <a href="assets/Pratik_Gund_Resume.pdf" download class="btn secondary-btn">
+            Download Resume <i class="fa-solid fa-download"></i>
+          </a>
+        </div>
+
+        <div class="social-icons">
+          <a href="https://github.com/" target="_blank" aria-label="GitHub">
+            <i class="fa-brands fa-github"></i>
+          </a>
+          <a href="https://linkedin.com/" target="_blank" aria-label="LinkedIn">
+            <i class="fa-brands fa-linkedin-in"></i>
+          </a>
+          <a href="https://instagram.com/" target="_blank" aria-label="Instagram">
+            <i class="fa-brands fa-instagram"></i>
+          </a>
+          <a href="mailto:pratikgund@example.com" aria-label="Email">
+            <i class="fa-solid fa-envelope"></i>
+          </a>
+        </div>
+      </div>
+
+      <div class="hero-image reveal">
+        <div class="image-card">
+          <div class="profile-placeholder">
+            <img src="photo.jpeg" alt="pratik gund">
+          </div>
+
+          <div class="floating-card card-one">
+            <i class="fa-solid fa-laptop-code"></i>
+            <span>Web Developer</span>
+          </div>
+
+          <div class="floating-card card-two">
+            <i class="fa-solid fa-layer-group"></i>
+            <span>Clean UI</span>
+          </div>
+        </div>
+      </div>
     </div>
+  </section>
 
-    <div class="card">
-      <h3>Mini Games Collection</h3>
-      <p>
-        A collection of multiple browser-based games.
-      </p>
+  <!-- About Section -->
+  <section class="about section" id="about">
+    <div class="container">
+      <div class="section-title reveal">
+        <p>About Me</p>
+        <h2>Who I Am</h2>
+      </div>
+
+      <div class="about-content reveal">
+        <div class="about-card glass">
+          <h3>Frontend & Full Stack Developer</h3>
+
+          <p>
+            My name is <strong>Pratik Gund</strong>. I am a passionate
+            Frontend and Full Stack Developer, and currently a
+            <strong>Diploma IT student</strong>. I enjoy building modern,
+            responsive, and professional websites with clean design and smooth
+            user experience.
+          </p>
+
+          <p>
+            I focus on problem-solving, responsive web development, clean UI
+            design, and continuous learning. My goal is to create websites that
+            are not only beautiful but also fast, accessible, and user-friendly.
+          </p>
+
+          <div class="about-stats">
+            <div>
+              <h4>3+</h4>
+              <span>Projects</span>
+            </div>
+            <div>
+              <h4>10+</h4>
+              <span>Skills</span>
+            </div>
+            <div>
+              <h4>100%</h4>
+              <span>Learning Mindset</span>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+  </section>
 
-    <div class="card">
-      <h3>Attendance Management System</h3>
-      <p>
-        A web-based attendance tracking system using HTML, CSS and JavaScript.
-      </p>
+  <!-- Skills Section -->
+  <section class="skills section" id="skills">
+    <div class="container">
+      <div class="section-title reveal">
+        <p>My Skills</p>
+        <h2>Technologies I Use</h2>
+      </div>
+
+      <div class="skills-grid">
+        <div class="skill-card glass reveal">
+          <i class="fa-solid fa-c"></i>
+          <h3>C</h3>
+          <div class="progress"><span style="width: 80%"></span></div>
+        </div>
+
+        <div class="skill-card glass reveal">
+          <i class="fa-solid fa-code"></i>
+          <h3>C++</h3>
+          <div class="progress"><span style="width: 78%"></span></div>
+        </div>
+
+        <div class="skill-card glass reveal">
+          <i class="fa-brands fa-python"></i>
+          <h3>Python</h3>
+          <div class="progress"><span style="width: 75%"></span></div>
+        </div>
+
+        <div class="skill-card glass reveal">
+          <i class="fa-brands fa-java"></i>
+          <h3>Java</h3>
+          <div class="progress"><span style="width: 72%"></span></div>
+        </div>
+
+        <div class="skill-card glass reveal">
+          <i class="fa-solid fa-database"></i>
+          <h3>SQL</h3>
+          <div class="progress"><span style="width: 70%"></span></div>
+        </div>
+
+        <div class="skill-card glass reveal">
+          <i class="fa-brands fa-html5"></i>
+          <h3>HTML5</h3>
+          <div class="progress"><span style="width: 90%"></span></div>
+        </div>
+
+        <div class="skill-card glass reveal">
+          <i class="fa-brands fa-css3-alt"></i>
+          <h3>CSS3</h3>
+          <div class="progress"><span style="width: 85%"></span></div>
+        </div>
+
+        <div class="skill-card glass reveal">
+          <i class="fa-brands fa-js"></i>
+          <h3>JavaScript</h3>
+          <div class="progress"><span style="width: 80%"></span></div>
+        </div>
+
+        <div class="skill-card glass reveal">
+          <i class="fa-brands fa-git-alt"></i>
+          <h3>Git</h3>
+          <div class="progress"><span style="width: 75%"></span></div>
+        </div>
+
+        <div class="skill-card glass reveal">
+          <i class="fa-brands fa-github"></i>
+          <h3>GitHub</h3>
+          <div class="progress"><span style="width: 78%"></span></div>
+        </div>
+
+        <div class="skill-card glass reveal">
+          <i class="fa-solid fa-laptop-code"></i>
+          <h3>VS Code</h3>
+          <div class="progress"><span style="width: 88%"></span></div>
+        </div>
+      </div>
     </div>
+  </section>
 
-    <div class="card">
-      <h3>Personal Portfolio Website</h3>
-      <p>
-        A modern animated personal portfolio website.
-      </p>
+  <!-- Projects Section -->
+  <section class="projects section" id="projects">
+    <div class="container">
+      <div class="section-title reveal">
+        <p>My Projects</p>
+        <h2>Featured Work</h2>
+      </div>
+
+      <div class="projects-grid">
+        <article class="project-card glass reveal">
+          <div class="project-image snake-preview">
+            <i class="fa-solid fa-gamepad"></i>
+            <h3>Snake Game</h3>
+          </div>
+
+          <div class="project-info">
+            <h3>Snake Game</h3>
+            <p>
+              A classic snake game built using HTML, CSS, and JavaScript with
+              score tracking, smooth movement, and responsive layout.
+            </p>
+
+            <div class="tech-tags">
+              <span>HTML</span>
+              <span>CSS</span>
+              <span>JavaScript</span>
+            </div>
+
+            <div class="project-buttons">
+              <a href="#" class="small-btn">Live Demo</a>
+              <a href="#" class="small-btn outline">GitHub</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="project-card glass reveal">
+          <div class="project-image calculator-preview">
+            <i class="fa-solid fa-calculator"></i>
+            <h3>Calculator</h3>
+          </div>
+
+          <div class="project-info">
+            <h3>Calculator</h3>
+            <p>
+              A modern calculator web app with clean UI, accurate operations,
+              keyboard-friendly design, and smooth button animations.
+            </p>
+
+            <div class="tech-tags">
+              <span>HTML</span>
+              <span>CSS</span>
+              <span>JavaScript</span>
+            </div>
+
+            <div class="project-buttons">
+              <a href="#" class="small-btn">Live Demo</a>
+              <a href="#" class="small-btn outline">GitHub</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="project-card glass reveal">
+          <div class="project-image gym-preview">
+            <i class="fa-solid fa-dumbbell"></i>
+            <h3>HR Fitness</h3>
+          </div>
+
+          <div class="project-info">
+            <h3>HR Fitness Gym Website</h3>
+            <p>
+              A premium gym website with membership plans, admission form,
+              BMI calculator, gallery, trainers section, and responsive design.
+            </p>
+
+            <div class="tech-tags">
+              <span>HTML</span>
+              <span>CSS</span>
+              <span>JavaScript</span>
+            </div>
+
+            <div class="project-buttons">
+              <a href="#" class="small-btn">Live Demo</a>
+              <a href="#" class="small-btn outline">GitHub</a>
+            </div>
+          </div>
+        </article>
+      </div>
     </div>
+  </section>
 
-  </div>
-</section>
+  <!-- Services Section -->
+  <section class="services section" id="services">
+    <div class="container">
+      <div class="section-title reveal">
+        <p>Services</p>
+        <h2>What I Can Do</h2>
+      </div>
 
-<!-- ===== CONTACT SECTION ===== -->
-<section id="contact" class="section fade">
+      <div class="services-grid">
+        <div class="service-card glass reveal">
+          <i class="fa-solid fa-code"></i>
+          <h3>Frontend Web Development</h3>
+          <p>Modern, fast, clean, and responsive frontend websites.</p>
+        </div>
 
-  <h2>Contact Me</h2>
+        <div class="service-card glass reveal">
+          <i class="fa-solid fa-mobile-screen"></i>
+          <h3>Responsive Website Design</h3>
+          <p>Mobile-friendly layouts that look perfect on all devices.</p>
+        </div>
 
-  <form class="contact-form" id="contactForm">
+        <div class="service-card glass reveal">
+          <i class="fa-solid fa-server"></i>
+          <h3>Full Stack Web Development</h3>
+          <p>Frontend and backend development for complete web solutions.</p>
+        </div>
 
-    <input
-      type="text"
-      id="name"
-      placeholder="Your Name"
-      required
-    >
+        <div class="service-card glass reveal">
+          <i class="fa-solid fa-pen-nib"></i>
+          <h3>UI/UX Design</h3>
+          <p>Clean, professional, and user-focused interface design.</p>
+        </div>
+      </div>
+    </div>
+  </section>
 
-    <input
-      type="email"
-      id="email"
-      placeholder="Your Email"
-      required
-    >
+  <!-- Contact Section -->
+  <section class="contact section" id="contact">
+    <div class="container">
+      <div class="section-title reveal">
+        <p>Contact Me</p>
+        <h2>Let's Build Something</h2>
+      </div>
 
-    <textarea
-      id="message"
-      rows="5"
-      placeholder="Your Message"
-      required
-    ></textarea>
+      <div class="contact-wrapper">
+        <div class="contact-info glass reveal">
+          <h3>Get In Touch</h3>
+          <p>
+            Have a project idea or want to work together? Send me a message.
+          </p>
 
-    <button type="submit" class="btn">
-      Send Message
-    </button>
+          <div class="contact-item">
+            <i class="fa-solid fa-envelope"></i>
+            <span>gundps2212@gmail.com</span>
+          </div>
 
-  </form>
+          <div class="contact-item">
+            <i class="fa-solid fa-phone"></i>
+            <span>+91 7219167095</span>
+          </div>
 
-</section>
+          <div class="contact-item">
+            <i class="fa-solid fa-location-dot"></i>
+            <span>Maharashtra, India</span>
+          </div>
+        </div>
 
-<!-- ===== FOOTER ===== -->
-<footer>
-  <p>© 2026 Pratik. All Rights Reserved.</p>
-</footer>
+        <form class="contact-form glass reveal" id="contactForm">
+          <div class="form-group">
+            <input type="text" id="name" placeholder="Full Name" />
+            <small></small>
+          </div>
 
-<script src="script.js"></script>
+          <div class="form-group">
+            <input type="email" id="email" placeholder="Email Address" />
+            <small></small>
+          </div>
 
+          <div class="form-group">
+            <input type="tel" id="phone" placeholder="Phone Number" />
+            <small></small>
+          </div>
+
+          <div class="form-group">
+            <input type="text" id="subject" placeholder="Subject" />
+            <small></small>
+          </div>
+
+          <div class="form-group">
+            <textarea id="message" rows="5" placeholder="Message"></textarea>
+            <small></small>
+          </div>
+
+          <button type="submit" class="btn primary-btn submit-btn">
+            Send Message <i class="fa-solid fa-paper-plane"></i>
+          </button>
+
+          <p class="form-success" id="formSuccess">
+            Message sent successfully!
+          </p>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>© 2026 Pratik Gund. All Rights Reserved.</p>
+  </footer>
+
+  <!-- Back To Top Button -->
+  <button class="back-to-top" id="backToTop" aria-label="Back to Top">
+    <i class="fa-solid fa-arrow-up"></i>
+  </button>
+
+  <!-- JavaScript -->
+  <script src="script.js"></script>
 </body>
 </html>
