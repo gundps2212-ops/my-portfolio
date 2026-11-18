@@ -251,7 +251,7 @@ document.querySelectorAll(".project-buttons a[href='#']").forEach((link) => {
 });
 
 
-// FULL-PAGE THREE.JS BACKGROUND: floating abstract 3D form
+// FULL-PAGE THREE.JS BACKGROUND: premium floating chrome rings
 (function initPageBackground3D() {
   const canvas = document.getElementById("background-3d-canvas");
   if (!canvas || !window.THREE) {
@@ -261,59 +261,71 @@ document.querySelectorAll(".project-buttons a[href='#']").forEach((link) => {
   const THREE = window.THREE;
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(48, window.innerWidth / window.innerHeight, .1, 100);
-  camera.position.set(0, 0, 10);
+  camera.position.set(0, 0, 11);
+
   const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.6));
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.setClearColor(0x000000, 0);
-  scene.add(new THREE.HemisphereLight(0x9acfff, 0x171126, 1.8));
-  const light1 = new THREE.PointLight(0x48cfff, 2.6, 22);
-  light1.position.set(4, 3, 5); scene.add(light1);
-  const light2 = new THREE.PointLight(0x9562ff, 2.2, 22);
-  light2.position.set(-4, -3, 3); scene.add(light2);
+  if ("outputEncoding" in renderer) renderer.outputEncoding = THREE.sRGBEncoding;
 
-  const model = new THREE.Group();
-  model.position.set(2.35, .1, -1.2);
-  scene.add(model);
-  const wireMat = new THREE.MeshBasicMaterial({ color: 0x58cfff, wireframe: true, transparent: true, opacity: .28 });
-  const glassMat = new THREE.MeshPhysicalMaterial({
-    color: 0x397bca, metalness: .62, roughness: .18,
-    transparent: true, opacity: .17, clearcoat: 1
+  scene.add(new THREE.HemisphereLight(0xe8f5ff, 0x20202b, 1.65));
+  const keyLight = new THREE.PointLight(0xffffff, 3.2, 30);
+  keyLight.position.set(4, 5, 7); scene.add(keyLight);
+  const coolLight = new THREE.PointLight(0x72cfff, 3.4, 24);
+  coolLight.position.set(-5, 1, 4); scene.add(coolLight);
+  const warmLight = new THREE.PointLight(0x9c8cff, 2.5, 22);
+  warmLight.position.set(2, -5, 3); scene.add(warmLight);
+
+  const rig = new THREE.Group();
+  rig.position.set(2.45, .05, -1.1);
+  scene.add(rig);
+
+  // Polished silver/chrome material; highlights are shaped by three moving lights.
+  const chrome = new THREE.MeshPhysicalMaterial({
+    color: 0xe5edf5, metalness: 1, roughness: .115,
+    clearcoat: 1, clearcoatRoughness: .08
   });
-  const violetMat = new THREE.MeshBasicMaterial({ color: 0x986bff, transparent: true, opacity: .48 });
-  const core = new THREE.Mesh(new THREE.IcosahedronGeometry(1.6, 2), glassMat);
-  model.add(core);
-  const wire = new THREE.Mesh(new THREE.IcosahedronGeometry(1.64, 2), wireMat);
-  model.add(wire);
-  const knot = new THREE.Mesh(new THREE.TorusKnotGeometry(1.22, .025, 180, 10, 2, 5),
-    new THREE.MeshBasicMaterial({ color: 0x5bdfff, transparent: true, opacity: .55 }));
-  knot.rotation.set(.8, .3, .2); model.add(knot);
-  const ring1 = new THREE.Mesh(new THREE.TorusGeometry(2.25, .012, 8, 160), violetMat);
-  ring1.rotation.set(1.1, .25, .2); model.add(ring1);
-  const ring2 = new THREE.Mesh(new THREE.TorusGeometry(2.65, .009, 8, 160),
-    new THREE.MeshBasicMaterial({ color: 0x62eaff, transparent: true, opacity: .38 }));
-  ring2.rotation.set(.35, -.7, -.4); model.add(ring2);
+  const darkChrome = new THREE.MeshPhysicalMaterial({
+    color: 0x8997a8, metalness: 1, roughness: .19,
+    clearcoat: 1, clearcoatRoughness: .12
+  });
+  const brightChrome = new THREE.MeshPhysicalMaterial({
+    color: 0xffffff, metalness: .96, roughness: .075,
+    clearcoat: 1, clearcoatRoughness: .04
+  });
 
-  const dots = [];
-  for (let i = 0; i < 14; i++) {
-    const dot = new THREE.Mesh(new THREE.SphereGeometry(.035 + (i % 3) * .012, 12, 12),
-      new THREE.MeshBasicMaterial({ color: i % 2 ? 0x9c7aff : 0x67eaff }));
-    const a = i / 14 * Math.PI * 2;
-    dot.position.set(Math.cos(a) * (2.4 + (i % 3) * .12), Math.sin(a) * 1.9, Math.sin(a * 2) * .5);
-    model.add(dot); dots.push(dot);
-  }
+  const ringA = new THREE.Mesh(new THREE.TorusGeometry(2.05, .105, 28, 220), chrome);
+  ringA.rotation.set(1.08, .25, -.28); rig.add(ringA);
+  const ringB = new THREE.Mesh(new THREE.TorusGeometry(1.58, .075, 24, 200), brightChrome);
+  ringB.rotation.set(.35, 1.02, .68); rig.add(ringB);
+  const ringC = new THREE.Mesh(new THREE.TorusGeometry(2.48, .052, 20, 220), darkChrome);
+  ringC.rotation.set(1.42, -.52, .2); rig.add(ringC);
+
+  // A fine inner orbit adds depth without making the page visually busy.
+  const innerOrbit = new THREE.Mesh(
+    new THREE.TorusGeometry(1.12, .018, 10, 160),
+    new THREE.MeshBasicMaterial({ color: 0xc9e8ff, transparent: true, opacity: .58 })
+  );
+  innerOrbit.rotation.set(.9, .4, .1); rig.add(innerOrbit);
 
   const pointer = { x: 0, y: 0 };
   window.addEventListener("pointermove", event => {
     pointer.x = (event.clientX / window.innerWidth - .5) * 2;
     pointer.y = (event.clientY / window.innerHeight - .5) * 2;
   }, { passive: true });
+
   function resize() {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
+    const narrow = window.innerWidth < 760;
+    rig.position.x = narrow ? 0 : 2.45;
+    rig.scale.setScalar(narrow ? .72 : 1);
+    rig.position.y = narrow ? -.15 : .05;
   }
   window.addEventListener("resize", resize, { passive: true });
+  resize();
 
   const clock = new THREE.Clock();
   let frame = 0, paused = false;
@@ -321,25 +333,50 @@ document.querySelectorAll(".project-buttons a[href='#']").forEach((link) => {
     if (paused) return;
     frame = requestAnimationFrame(animate);
     const t = clock.getElapsedTime();
-    // Automatic floating/rotation continues even when the mouse is still.
-    model.position.y = .1 + Math.sin(t * .42) * .22;
-    model.rotation.y += (pointer.x * .25 + Math.sin(t * .22) * .12 - model.rotation.y) * .018;
-    model.rotation.x += (-pointer.y * .16 + Math.cos(t * .2) * .08 - model.rotation.x) * .018;
-    core.rotation.y = t * .12;
-    wire.rotation.x = -t * .08;
-    knot.rotation.z = .2 + t * .1;
-    ring1.rotation.z = .2 + t * .07;
-    ring2.rotation.y = -.7 + t * .06;
-    dots.forEach((dot, i) => {
-      dot.position.y += Math.sin(t * .7 + i) * .0007;
-      dot.rotation.x = t * .25;
-    });
+
+    // Gentle automatic orbit always runs; pointer movement adds responsive tilt.
+    rig.position.y = (window.innerWidth < 760 ? -.15 : .05) + Math.sin(t * .48) * .2;
+    rig.rotation.y += (pointer.x * .32 + Math.sin(t * .24) * .13 - rig.rotation.y) * .025;
+    rig.rotation.x += (-pointer.y * .23 + Math.cos(t * .2) * .09 - rig.rotation.x) * .025;
+    ringA.rotation.z = -.28 + t * .12;
+    ringB.rotation.z = .68 - t * .16;
+    ringC.rotation.y = -.52 + t * .085;
+    innerOrbit.rotation.z = .1 + t * .2;
+    coolLight.position.x = -5 + Math.sin(t * .45) * 1.4;
+    warmLight.position.y = -5 + Math.cos(t * .38) * 1.2;
     renderer.render(scene, camera);
   }
   animate();
+
   document.addEventListener("visibilitychange", () => {
     paused = document.hidden;
     if (paused) cancelAnimationFrame(frame);
     else { clock.start(); animate(); }
+  });
+})();
+
+// Give the portrait a real perspective tilt and layered depth on pointer movement.
+(function initPortrait3D() {
+  const frame = document.querySelector(".hero-photo-frame");
+  const photo = document.querySelector(".hero-profile-photo");
+  if (!frame || !photo || !window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+  frame.addEventListener("pointermove", event => {
+    const rect = frame.getBoundingClientRect();
+    const x = (event.clientX - rect.left) / rect.width;
+    const y = (event.clientY - rect.top) / rect.height;
+    const rotateY = (x - .5) * 15;
+    const rotateX = (.5 - y) * 12;
+    frame.style.setProperty("--photo-rotate-x", rotateX + "deg");
+    frame.style.setProperty("--photo-rotate-y", rotateY + "deg");
+    frame.style.setProperty("--photo-shift-x", ((x - .5) * 10) + "px");
+    frame.style.setProperty("--photo-shift-y", ((y - .5) * 10) + "px");
+    frame.classList.add("photo-hovering");
+  });
+  frame.addEventListener("pointerleave", () => {
+    frame.classList.remove("photo-hovering");
+    frame.style.setProperty("--photo-rotate-x", "0deg");
+    frame.style.setProperty("--photo-rotate-y", "0deg");
+    frame.style.setProperty("--photo-shift-x", "0px");
+    frame.style.setProperty("--photo-shift-y", "0px");
   });
 })();
