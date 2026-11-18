@@ -102,16 +102,17 @@
       </div>
 
       <div class="hero-image reveal">
-        <div class="image-card">
-          <div class="profile-placeholder">
-            <img src="photo.jpeg" alt="pratik gund">
+        <div class="three-model-wrap">
+          <canvas id="three-canvas" aria-label="Interactive 3D futuristic robot model"></canvas>
+          <div class="model-orbit-label"><span class="live-dot"></span> INTERACTIVE 3D MODEL</div>
+          <div class="profile-mini">
+            <img src="photo.jpeg" alt="Pratik Gund profile photo">
+            <span>PRATIK GUND</span>
           </div>
-
           <div class="floating-card card-one">
             <i class="fa-solid fa-laptop-code"></i>
             <span>Web Developer</span>
           </div>
-
           <div class="floating-card card-two">
             <i class="fa-solid fa-layer-group"></i>
             <span>Clean UI</span>
@@ -449,7 +450,9 @@
     <i class="fa-solid fa-arrow-up"></i>
   </button>
 
-  <!-- JavaScript -->
+  <!-- Three.js 3D engine -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <!-- Portfolio interactions -->
   <script src="script.js"></script>
 </body>
 </html>
