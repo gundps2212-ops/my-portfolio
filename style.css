@@ -246,7 +246,14 @@ a{text-decoration:none;color:inherit}ul{list-style:none}button,input,textarea{fo
 .hero-photo-frame .card-two{right:-8%;bottom:29%}
 
 /* Minimal dark base; the animated 3D object is the visual background */
-body{background:#05070d}
+body{
+  background-color:#0b1d34;
+  background-image:
+    radial-gradient(ellipse at 18% 18%,rgba(0,139,255,.28),transparent 42%),
+    radial-gradient(ellipse at 82% 70%,rgba(0,91,190,.22),transparent 45%),
+    linear-gradient(135deg,#102b4b 0%,#0b203a 48%,#102c4c 100%);
+  background-attachment:fixed;
+}
 body::before,body::after{display:none}
 #background-3d-canvas{
   position:fixed;inset:0;width:100%;height:100%;z-index:0;
@@ -290,7 +297,7 @@ body::before,body::after{display:none}
 .hero-photo-frame .photo-aura{transform:translateZ(-35px) scale(1.08)}
 .hero-photo-frame .photo-caption{transform:translate3d(-50%,0,55px)}
 .hero-photo-frame .floating-card{transform:translateZ(75px)}
-#background-3d-canvas{opacity:.9}
+#background-3d-canvas{opacity:.82}
 @media(max-width:760px){
   .hero-photo-frame{perspective:900px}
   .hero-profile-photo{transform:translateZ(16px)}
