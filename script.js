@@ -269,31 +269,33 @@ document.querySelectorAll(".project-buttons a[href='#']").forEach((link) => {
   renderer.setClearColor(0x000000, 0);
   if ("outputEncoding" in renderer) renderer.outputEncoding = THREE.sRGBEncoding;
 
-  scene.add(new THREE.HemisphereLight(0xe8f5ff, 0x20202b, 1.65));
-  const keyLight = new THREE.PointLight(0x4d9dff, 2.5, 30);
+  scene.add(new THREE.HemisphereLight(0xffffff, 0x10131b, 1.9));
+  const keyLight = new THREE.PointLight(0xffffff, 4.6, 32);
   keyLight.position.set(4, 5, 7); scene.add(keyLight);
-  const coolLight = new THREE.PointLight(0x00d9ff, 3.8, 24);
+  const coolLight = new THREE.PointLight(0xdcecff, 4.2, 28);
   coolLight.position.set(-5, 1, 4); scene.add(coolLight);
-  const warmLight = new THREE.PointLight(0x8b55ff, 3.0, 22);
+  const warmLight = new THREE.PointLight(0xffffff, 3.4, 26);
   warmLight.position.set(2, -5, 3); scene.add(warmLight);
+  const rimLight = new THREE.PointLight(0x6b8cff, 1.8, 24);
+  rimLight.position.set(5, -2, -1); scene.add(rimLight);
 
   const rig = new THREE.Group();
   rig.position.set(0, .05, -1.1);
   scene.add(rig);
 
-  // Deep metallic 3D rings: blue titanium, violet alloy and glowing teal.
-  // Colored specular highlights keep the rings dimensional without a flat white look.
+  // Polished liquid-chrome / dark-silver metal, matching the supplied reference.
+  // Dark graphite base + sharp white reflections create real 3D depth (not a flat white ring).
   const chrome = new THREE.MeshPhongMaterial({
-    color: 0x075078, specular: 0x00aaff, shininess: 165,
-    emissive: 0x031d38, emissiveIntensity: .55
+    color: 0x555b64, specular: 0xffffff, shininess: 230,
+    emissive: 0x080a0e, emissiveIntensity: .12
   });
   const darkChrome = new THREE.MeshPhongMaterial({
-    color: 0x24104f, specular: 0x8055ff, shininess: 155,
-    emissive: 0x160632, emissiveIntensity: .52
+    color: 0x30343b, specular: 0xf4f7ff, shininess: 245,
+    emissive: 0x050609, emissiveIntensity: .10
   });
   const brightChrome = new THREE.MeshPhongMaterial({
-    color: 0x00605f, specular: 0x00e6cc, shininess: 175,
-    emissive: 0x002e35, emissiveIntensity: .62
+    color: 0x777d85, specular: 0xffffff, shininess: 255,
+    emissive: 0x0a0c10, emissiveIntensity: .14
   });
 
   const ringA = new THREE.Mesh(new THREE.TorusGeometry(2.72, .17, 32, 260), chrome);
@@ -305,8 +307,8 @@ document.querySelectorAll(".project-buttons a[href='#']").forEach((link) => {
 
   // A fine inner orbit adds depth without making the page visually busy.
   const innerOrbit = new THREE.Mesh(
-    new THREE.TorusGeometry(1.48, .045, 14, 200),
-    new THREE.MeshPhongMaterial({ color: 0x064c68, specular: 0x00cfff, shininess: 150, emissive: 0x032c48, emissiveIntensity: .6, transparent: true, opacity: .9 })
+    new THREE.TorusGeometry(1.48, .055, 16, 220),
+    new THREE.MeshPhongMaterial({ color: 0x555b64, specular: 0xffffff, shininess: 235, emissive: 0x080a0e, emissiveIntensity: .12, transparent: true, opacity: .96 })
   );
   innerOrbit.rotation.set(.9, .4, .1); rig.add(innerOrbit);
 
@@ -347,22 +349,22 @@ document.querySelectorAll(".project-buttons a[href='#']").forEach((link) => {
   });
 
   // Tiny glowing data particles across the whole screen for a futuristic atmosphere.
-  const dotCount = 620;
+  const dotCount = 1200;
   const dotPositions = new Float32Array(dotCount * 3);
   const dotSeeds = [];
   for (let i = 0; i < dotCount; i++) {
-    const x = (Math.random() - .5) * 18.5;
-    const y = (Math.random() - .5) * 11.5;
+    const x = (Math.random() - .5) * 20.5;
+    const y = (Math.random() - .5) * 13.5;
     const z = -2.8 - Math.random() * 7.0;
     dotPositions[i * 3] = x;
     dotPositions[i * 3 + 1] = y;
     dotPositions[i * 3 + 2] = z;
-    dotSeeds.push({ x, y, z, phase: Math.random() * Math.PI * 2, speed: .65 + Math.random() * 1.35, drift: .12 + Math.random() * .25, parallax: .12 + Math.random() * .34 });
+    dotSeeds.push({ x, y, z, phase: Math.random() * Math.PI * 2, speed: .85 + Math.random() * 1.8, drift: .28 + Math.random() * .58, parallax: .28 + Math.random() * .72 });
   }
   const dotGeometry = new THREE.BufferGeometry();
   dotGeometry.setAttribute("position", new THREE.BufferAttribute(dotPositions, 3));
   const dotMaterial = new THREE.PointsMaterial({
-    color: 0x20cfff, size: 0.085, transparent: true, opacity: .96,
+    color: 0x48cfff, size: 0.075, transparent: true, opacity: .98,
     sizeAttenuation: true, depthWrite: false, blending: THREE.AdditiveBlending
   });
   const starDots = new THREE.Points(dotGeometry, dotMaterial);
@@ -401,7 +403,7 @@ document.querySelectorAll(".project-buttons a[href='#']").forEach((link) => {
     dotSeeds.forEach((dot, i) => {
       dotArray[i * 3] = dot.x + Math.sin(t * dot.speed + dot.phase) * dot.drift + pointer.x * dot.parallax;
       dotArray[i * 3 + 1] = dot.y + Math.cos(t * dot.speed * .82 + dot.phase) * dot.drift * 1.25 - pointer.y * dot.parallax;
-      dotArray[i * 3 + 2] = dot.z + Math.sin(t * .8 + dot.phase) * .22;
+      dotArray[i * 3 + 2] = dot.z + Math.sin(t * 1.1 + dot.phase) * .34;
     });
     dotGeometry.attributes.position.needsUpdate = true;
     dotMaterial.opacity = .78 + (Math.sin(t * 2.0) + 1) * .11;
@@ -423,6 +425,7 @@ document.querySelectorAll(".project-buttons a[href='#']").forEach((link) => {
     innerOrbit.rotation.z = .1 + t * .2;
     coolLight.position.x = -5 + Math.sin(t * .45) * 1.4;
     warmLight.position.y = -5 + Math.cos(t * .38) * 1.2;
+    rimLight.position.x = 5 + Math.cos(t * .32) * 1.2;
     renderer.render(scene, camera);
   }
   animate();
