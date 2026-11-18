@@ -251,100 +251,69 @@ document.querySelectorAll(".project-buttons a[href='#']").forEach((link) => {
 });
 
 
-// THREE.JS: elegant abstract 3D background sculpture (no character/robot)
-(function initAbstractScene() {
-  const canvas = document.getElementById("three-canvas");
+// FULL-PAGE THREE.JS BACKGROUND: floating abstract 3D form
+(function initPageBackground3D() {
+  const canvas = document.getElementById("background-3d-canvas");
   if (!canvas || !window.THREE) {
-    console.warn("Three.js unavailable: check the CDN connection.");
+    console.warn("Three.js background unavailable. Check CDN connection.");
     return;
   }
-  const THREE = window.THREE, host = canvas.parentElement;
+  const THREE = window.THREE;
   const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 100);
-  camera.position.set(0, 0, 8.2);
+  const camera = new THREE.PerspectiveCamera(48, window.innerWidth / window.innerHeight, .1, 100);
+  camera.position.set(0, 0, 10);
   const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.8));
-  renderer.outputEncoding = THREE.sRGBEncoding;
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.6));
+  renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.setClearColor(0x000000, 0);
-  scene.add(new THREE.HemisphereLight(0xb8e9ff, 0x17102e, 2.2));
-  const cyanLight = new THREE.PointLight(0x58eaff, 3.6, 18);
-  cyanLight.position.set(3, 3, 4); scene.add(cyanLight);
-  const purpleLight = new THREE.PointLight(0x986bff, 3.4, 18);
-  purpleLight.position.set(-3, -2, 2); scene.add(purpleLight);
+  scene.add(new THREE.HemisphereLight(0x9acfff, 0x171126, 1.8));
+  const light1 = new THREE.PointLight(0x48cfff, 2.6, 22);
+  light1.position.set(4, 3, 5); scene.add(light1);
+  const light2 = new THREE.PointLight(0x9562ff, 2.2, 22);
+  light2.position.set(-4, -3, 3); scene.add(light2);
 
-  const sculpture = new THREE.Group(); scene.add(sculpture);
-  const glass = new THREE.MeshPhysicalMaterial({
-    color: 0x8bdfff, metalness: .42, roughness: .12,
-    transparent: true, opacity: .72, transmission: .25,
-    clearcoat: 1, clearcoatRoughness: .08
+  const model = new THREE.Group();
+  model.position.set(2.35, .1, -1.2);
+  scene.add(model);
+  const wireMat = new THREE.MeshBasicMaterial({ color: 0x58cfff, wireframe: true, transparent: true, opacity: .28 });
+  const glassMat = new THREE.MeshPhysicalMaterial({
+    color: 0x397bca, metalness: .62, roughness: .18,
+    transparent: true, opacity: .17, clearcoat: 1
   });
-  const blue = new THREE.MeshStandardMaterial({
-    color: 0x287dff, metalness: .72, roughness: .22,
-    emissive: 0x102c8b, emissiveIntensity: .55
-  });
-  const violet = new THREE.MeshStandardMaterial({
-    color: 0x9c72ff, metalness: .68, roughness: .2,
-    emissive: 0x4114b5, emissiveIntensity: .8
-  });
-  const glow = new THREE.MeshBasicMaterial({ color: 0x72edff });
-  const core = new THREE.Mesh(new THREE.IcosahedronGeometry(1.08, 2), glass);
-  sculpture.add(core);
-  const inner = new THREE.Mesh(
-    new THREE.IcosahedronGeometry(.72, 1),
-    new THREE.MeshStandardMaterial({ color: 0x182c60, metalness: .8, roughness: .18, wireframe: true })
-  );
-  sculpture.add(inner);
-  const knot = new THREE.Mesh(new THREE.TorusKnotGeometry(.9, .026, 180, 12, 2, 5), blue);
-  knot.rotation.set(.8, .25, .35); sculpture.add(knot);
-  const ringA = new THREE.Mesh(new THREE.TorusGeometry(1.75, .018, 12, 160), glow);
-  ringA.rotation.set(1.18, .22, .12); sculpture.add(ringA);
-  const ringB = new THREE.Mesh(new THREE.TorusGeometry(2.05, .012, 10, 160), violet);
-  ringB.rotation.set(.45, -.68, -.5); sculpture.add(ringB);
-  const ringC = new THREE.Mesh(new THREE.TorusGeometry(1.42, .012, 10, 140), blue);
-  ringC.rotation.set(1.85, .65, .25); sculpture.add(ringC);
+  const violetMat = new THREE.MeshBasicMaterial({ color: 0x986bff, transparent: true, opacity: .48 });
+  const core = new THREE.Mesh(new THREE.IcosahedronGeometry(1.6, 2), glassMat);
+  model.add(core);
+  const wire = new THREE.Mesh(new THREE.IcosahedronGeometry(1.64, 2), wireMat);
+  model.add(wire);
+  const knot = new THREE.Mesh(new THREE.TorusKnotGeometry(1.22, .025, 180, 10, 2, 5),
+    new THREE.MeshBasicMaterial({ color: 0x5bdfff, transparent: true, opacity: .55 }));
+  knot.rotation.set(.8, .3, .2); model.add(knot);
+  const ring1 = new THREE.Mesh(new THREE.TorusGeometry(2.25, .012, 8, 160), violetMat);
+  ring1.rotation.set(1.1, .25, .2); model.add(ring1);
+  const ring2 = new THREE.Mesh(new THREE.TorusGeometry(2.65, .009, 8, 160),
+    new THREE.MeshBasicMaterial({ color: 0x62eaff, transparent: true, opacity: .38 }));
+  ring2.rotation.set(.35, -.7, -.4); model.add(ring2);
 
-  // Small floating crystal facets around the central glass form.
-  const shards = [];
-  for (let i = 0; i < 9; i++) {
-    const shard = new THREE.Mesh(
-      new THREE.OctahedronGeometry(.12 + (i % 3) * .035, 0),
-      i % 2 ? violet : glow
-    );
-    const angle = i / 9 * Math.PI * 2;
-    shard.position.set(Math.cos(angle) * (1.9 + (i % 2) * .2),
-      Math.sin(angle) * (1.45 + (i % 3) * .12), Math.sin(angle * 2) * .35);
-    shard.userData.phase = angle;
-    sculpture.add(shard); shards.push(shard);
+  const dots = [];
+  for (let i = 0; i < 14; i++) {
+    const dot = new THREE.Mesh(new THREE.SphereGeometry(.035 + (i % 3) * .012, 12, 12),
+      new THREE.MeshBasicMaterial({ color: i % 2 ? 0x9c7aff : 0x67eaff }));
+    const a = i / 14 * Math.PI * 2;
+    dot.position.set(Math.cos(a) * (2.4 + (i % 3) * .12), Math.sin(a) * 1.9, Math.sin(a * 2) * .5);
+    model.add(dot); dots.push(dot);
   }
-
-  // Fine particle field adds depth without competing with the portfolio text.
-  const count = 260, positions = new Float32Array(count * 3);
-  for (let i = 0; i < count; i++) {
-    positions[i * 3] = (Math.random() - .5) * 7;
-    positions[i * 3 + 1] = (Math.random() - .5) * 7;
-    positions[i * 3 + 2] = (Math.random() - .5) * 3 - 1;
-  }
-  const particleGeometry = new THREE.BufferGeometry();
-  particleGeometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
-  const particles = new THREE.Points(particleGeometry,
-    new THREE.PointsMaterial({ color: 0x9edfff, size: .018, transparent: true, opacity: .7 }));
-  scene.add(particles);
 
   const pointer = { x: 0, y: 0 };
-  host.addEventListener("pointermove", event => {
-    const rect = host.getBoundingClientRect();
-    pointer.x = ((event.clientX - rect.left) / rect.width - .5) * 2;
-    pointer.y = ((event.clientY - rect.top) / rect.height - .5) * 2;
+  window.addEventListener("pointermove", event => {
+    pointer.x = (event.clientX / window.innerWidth - .5) * 2;
+    pointer.y = (event.clientY / window.innerHeight - .5) * 2;
   }, { passive: true });
-  host.addEventListener("pointerleave", () => { pointer.x = 0; pointer.y = 0; });
   function resize() {
-    const width = Math.max(1, host.clientWidth), height = Math.max(1, host.clientHeight);
-    renderer.setSize(width, height, false);
-    camera.aspect = width / height; camera.updateProjectionMatrix();
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
   }
-  resize();
-  if ("ResizeObserver" in window) new ResizeObserver(resize).observe(host);
-  else window.addEventListener("resize", resize);
+  window.addEventListener("resize", resize, { passive: true });
 
   const clock = new THREE.Clock();
   let frame = 0, paused = false;
@@ -352,21 +321,19 @@ document.querySelectorAll(".project-buttons a[href='#']").forEach((link) => {
     if (paused) return;
     frame = requestAnimationFrame(animate);
     const t = clock.getElapsedTime();
-    sculpture.rotation.y += (pointer.x * .24 - sculpture.rotation.y) * .025;
-    sculpture.rotation.x += (-pointer.y * .16 - sculpture.rotation.x) * .025;
-    sculpture.position.y = Math.sin(t * .7) * .12;
-    core.rotation.x = t * .12; core.rotation.y = -t * .16;
-    inner.rotation.y = -t * .2; inner.rotation.z = t * .1;
-    knot.rotation.z = .35 + t * .12;
-    ringA.rotation.z = .12 + t * .09;
-    ringB.rotation.y = -.68 + t * .08;
-    ringC.rotation.x = 1.85 + t * .07;
-    shards.forEach((shard, i) => {
-      shard.position.y += Math.sin(t * .8 + shard.userData.phase) * .0008;
-      shard.rotation.x = t * (.18 + i * .006);
-      shard.rotation.y = t * .22;
+    // Automatic floating/rotation continues even when the mouse is still.
+    model.position.y = .1 + Math.sin(t * .42) * .22;
+    model.rotation.y += (pointer.x * .25 + Math.sin(t * .22) * .12 - model.rotation.y) * .018;
+    model.rotation.x += (-pointer.y * .16 + Math.cos(t * .2) * .08 - model.rotation.x) * .018;
+    core.rotation.y = t * .12;
+    wire.rotation.x = -t * .08;
+    knot.rotation.z = .2 + t * .1;
+    ring1.rotation.z = .2 + t * .07;
+    ring2.rotation.y = -.7 + t * .06;
+    dots.forEach((dot, i) => {
+      dot.position.y += Math.sin(t * .7 + i) * .0007;
+      dot.rotation.x = t * .25;
     });
-    particles.rotation.y = t * .018;
     renderer.render(scene, camera);
   }
   animate();
