@@ -251,8 +251,8 @@ document.querySelectorAll(".project-buttons a[href='#']").forEach((link) => {
 });
 
 
-// THREE.JS: animated 3D robot built from real 3D meshes
-(function initThreeRobot() {
+// THREE.JS: elegant abstract 3D background sculpture (no character/robot)
+(function initAbstractScene() {
   const canvas = document.getElementById("three-canvas");
   if (!canvas || !window.THREE) {
     console.warn("Three.js unavailable: check the CDN connection.");
@@ -260,58 +260,119 @@ document.querySelectorAll(".project-buttons a[href='#']").forEach((link) => {
   }
   const THREE = window.THREE, host = canvas.parentElement;
   const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(34, 1, 0.1, 100);
-  camera.position.set(0, 0.15, 8.5);
-  const renderer = new THREE.WebGLRenderer({canvas,alpha:true,antialias:true});
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
-  renderer.outputEncoding=THREE.sRGBEncoding;
-  renderer.setClearColor(0x000000,0);
-  scene.add(new THREE.HemisphereLight(0x9edcff,0x11152e,2.1));
-  const key=new THREE.PointLight(0x63eaff,3.2,18);key.position.set(3,4,5);scene.add(key);
-  const violetLight=new THREE.PointLight(0x8b63ff,2.7,15);violetLight.position.set(-4,-1,2);scene.add(violetLight);
-  const rim=new THREE.DirectionalLight(0xffffff,1.5);rim.position.set(0,3,-4);scene.add(rim);
-  const robot=new THREE.Group();scene.add(robot);
-  const shell=new THREE.MeshPhysicalMaterial({color:0x8fcfff,metalness:.78,roughness:.23,clearcoat:1,clearcoatRoughness:.12});
-  const dark=new THREE.MeshStandardMaterial({color:0x101b35,metalness:.85,roughness:.28});
-  const glow=new THREE.MeshStandardMaterial({color:0x64f4ff,emissive:0x16bfff,emissiveIntensity:2.4,metalness:.25,roughness:.2});
-  const violet=new THREE.MeshStandardMaterial({color:0x9775ff,emissive:0x4b20ff,emissiveIntensity:1.3,metalness:.65,roughness:.25});
-  function ball(parent,mat,pos,scale,segments=40){const m=new THREE.Mesh(new THREE.SphereGeometry(1,segments,segments),mat);m.position.set(...pos);m.scale.set(...scale);m.castShadow=true;parent.add(m);return m;}
-  function tube(parent,mat,rt,rb,h,pos,rot=[0,0,0]){const m=new THREE.Mesh(new THREE.CylinderGeometry(rt,rb,h,32),mat);m.position.set(...pos);m.rotation.set(...rot);m.castShadow=true;parent.add(m);return m;}
-  // chest, neck and shoulder armour
-  tube(robot,dark,.28,.34,.42,[0,-.93,0]);
-  ball(robot,shell,[0,-1.55,0],[1.02,.82,.57]);
-  ball(robot,dark,[0,-1.42,.48],[.65,.42,.15]);
-  ball(robot,glow,[0,-1.42,.625],[.28,.12,.035],24);
-  ball(robot,shell,[-1.12,-1.28,0],[.42,.48,.45]);ball(robot,shell,[1.12,-1.28,0],[.42,.48,.45]);
-  tube(robot,dark,.22,.28,.75,[-1.24,-1.86,0],[0,0,-.12]);tube(robot,dark,.22,.28,.75,[1.24,-1.86,0],[0,0,.12]);
-  ball(robot,violet,[-1.27,-2.28,.02],[.25,.25,.25],24);ball(robot,violet,[1.27,-2.28,.02],[.25,.25,.25],24);
-  // head, visor and glowing eyes
-  ball(robot,shell,[0,.18,0],[.91,1.02,.7],48);
-  ball(robot,dark,[0,.08,.59],[.72,.56,.17],40);
-  ball(robot,glow,[-.32,.2,.75],[.17,.115,.055],24);ball(robot,glow,[.32,.2,.75],[.17,.115,.055],24);
-  ball(robot,violet,[0,.55,.69],[.36,.055,.035],24);
-  for(let i=0;i<5;i++){const bar=new THREE.Mesh(new THREE.BoxGeometry(.055,.17,.035),glow);bar.position.set((i-2)*.105,-.28,.75);robot.add(bar);}
-  ball(robot,dark,[-.9,.12,0],[.2,.38,.28]);ball(robot,dark,[.9,.12,0],[.2,.38,.28]);
-  ball(robot,glow,[-1.02,.13,.12],[.075,.19,.09],20);ball(robot,glow,[1.02,.13,.12],[.075,.19,.09],20);
-  tube(robot,violet,.035,.055,.34,[0,1.2,0]);ball(robot,glow,[0,1.4,0],[.12,.12,.12],24);
-  // three rotating energy rings
-  const orbit=new THREE.Group();robot.add(orbit);
-  const ring1=new THREE.Mesh(new THREE.TorusGeometry(1.72,.018,12,150),glow);ring1.rotation.set(1.18,.1,.22);orbit.add(ring1);
-  const ring2=new THREE.Mesh(new THREE.TorusGeometry(2.05,.012,10,150),violet);ring2.rotation.set(.45,-.65,-.55);orbit.add(ring2);
-  const ring3=new THREE.Mesh(new THREE.TorusGeometry(1.5,.009,8,120),shell);ring3.rotation.set(1.9,.8,.3);orbit.add(ring3);
-  for(let i=0;i<8;i++){const n=new THREE.Mesh(new THREE.SphereGeometry(.055,16,16),i%2?glow:violet);const a=i/8*Math.PI*2;n.position.set(Math.cos(a)*1.95,Math.sin(a)*1.45,Math.sin(a*2)*.55);orbit.add(n);}
-  // floating particles
-  const count=180,coords=new Float32Array(count*3);
-  for(let i=0;i<count;i++){coords[i*3]=(Math.random()-.5)*5.8;coords[i*3+1]=(Math.random()-.5)*6.5;coords[i*3+2]=(Math.random()-.5)*2.5-1;}
-  const pg=new THREE.BufferGeometry();pg.setAttribute("position",new THREE.BufferAttribute(coords,3));
-  const particles=new THREE.Points(pg,new THREE.PointsMaterial({color:0x9bdfff,size:.025,transparent:true,opacity:.72}));scene.add(particles);
-  const pointer={x:0,y:0};
-  host.addEventListener("pointermove",e=>{const r=host.getBoundingClientRect();pointer.x=((e.clientX-r.left)/r.width-.5)*2;pointer.y=((e.clientY-r.top)/r.height-.5)*2;},{passive:true});
-  host.addEventListener("pointerleave",()=>{pointer.x=0;pointer.y=0;});
-  function resize(){const w=Math.max(1,host.clientWidth),h=Math.max(1,host.clientHeight);renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();}
-  resize();if("ResizeObserver"in window)new ResizeObserver(resize).observe(host);else window.addEventListener("resize",resize);
-  const clock=new THREE.Clock();let frame=0,paused=false;
-  function animate(){if(paused)return;frame=requestAnimationFrame(animate);const t=clock.getElapsedTime();robot.position.y=Math.sin(t*1.15)*.09;robot.rotation.y+=(pointer.x*.28-robot.rotation.y)*.035;robot.rotation.x+=(-pointer.y*.16-robot.rotation.x)*.035;orbit.rotation.y=t*.2;orbit.rotation.z=Math.sin(t*.35)*.12;particles.rotation.y=t*.025;renderer.render(scene,camera);}
+  const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 100);
+  camera.position.set(0, 0, 8.2);
+  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.8));
+  renderer.outputEncoding = THREE.sRGBEncoding;
+  renderer.setClearColor(0x000000, 0);
+  scene.add(new THREE.HemisphereLight(0xb8e9ff, 0x17102e, 2.2));
+  const cyanLight = new THREE.PointLight(0x58eaff, 3.6, 18);
+  cyanLight.position.set(3, 3, 4); scene.add(cyanLight);
+  const purpleLight = new THREE.PointLight(0x986bff, 3.4, 18);
+  purpleLight.position.set(-3, -2, 2); scene.add(purpleLight);
+
+  const sculpture = new THREE.Group(); scene.add(sculpture);
+  const glass = new THREE.MeshPhysicalMaterial({
+    color: 0x8bdfff, metalness: .42, roughness: .12,
+    transparent: true, opacity: .72, transmission: .25,
+    clearcoat: 1, clearcoatRoughness: .08
+  });
+  const blue = new THREE.MeshStandardMaterial({
+    color: 0x287dff, metalness: .72, roughness: .22,
+    emissive: 0x102c8b, emissiveIntensity: .55
+  });
+  const violet = new THREE.MeshStandardMaterial({
+    color: 0x9c72ff, metalness: .68, roughness: .2,
+    emissive: 0x4114b5, emissiveIntensity: .8
+  });
+  const glow = new THREE.MeshBasicMaterial({ color: 0x72edff });
+  const core = new THREE.Mesh(new THREE.IcosahedronGeometry(1.08, 2), glass);
+  sculpture.add(core);
+  const inner = new THREE.Mesh(
+    new THREE.IcosahedronGeometry(.72, 1),
+    new THREE.MeshStandardMaterial({ color: 0x182c60, metalness: .8, roughness: .18, wireframe: true })
+  );
+  sculpture.add(inner);
+  const knot = new THREE.Mesh(new THREE.TorusKnotGeometry(.9, .026, 180, 12, 2, 5), blue);
+  knot.rotation.set(.8, .25, .35); sculpture.add(knot);
+  const ringA = new THREE.Mesh(new THREE.TorusGeometry(1.75, .018, 12, 160), glow);
+  ringA.rotation.set(1.18, .22, .12); sculpture.add(ringA);
+  const ringB = new THREE.Mesh(new THREE.TorusGeometry(2.05, .012, 10, 160), violet);
+  ringB.rotation.set(.45, -.68, -.5); sculpture.add(ringB);
+  const ringC = new THREE.Mesh(new THREE.TorusGeometry(1.42, .012, 10, 140), blue);
+  ringC.rotation.set(1.85, .65, .25); sculpture.add(ringC);
+
+  // Small floating crystal facets around the central glass form.
+  const shards = [];
+  for (let i = 0; i < 9; i++) {
+    const shard = new THREE.Mesh(
+      new THREE.OctahedronGeometry(.12 + (i % 3) * .035, 0),
+      i % 2 ? violet : glow
+    );
+    const angle = i / 9 * Math.PI * 2;
+    shard.position.set(Math.cos(angle) * (1.9 + (i % 2) * .2),
+      Math.sin(angle) * (1.45 + (i % 3) * .12), Math.sin(angle * 2) * .35);
+    shard.userData.phase = angle;
+    sculpture.add(shard); shards.push(shard);
+  }
+
+  // Fine particle field adds depth without competing with the portfolio text.
+  const count = 260, positions = new Float32Array(count * 3);
+  for (let i = 0; i < count; i++) {
+    positions[i * 3] = (Math.random() - .5) * 7;
+    positions[i * 3 + 1] = (Math.random() - .5) * 7;
+    positions[i * 3 + 2] = (Math.random() - .5) * 3 - 1;
+  }
+  const particleGeometry = new THREE.BufferGeometry();
+  particleGeometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+  const particles = new THREE.Points(particleGeometry,
+    new THREE.PointsMaterial({ color: 0x9edfff, size: .018, transparent: true, opacity: .7 }));
+  scene.add(particles);
+
+  const pointer = { x: 0, y: 0 };
+  host.addEventListener("pointermove", event => {
+    const rect = host.getBoundingClientRect();
+    pointer.x = ((event.clientX - rect.left) / rect.width - .5) * 2;
+    pointer.y = ((event.clientY - rect.top) / rect.height - .5) * 2;
+  }, { passive: true });
+  host.addEventListener("pointerleave", () => { pointer.x = 0; pointer.y = 0; });
+  function resize() {
+    const width = Math.max(1, host.clientWidth), height = Math.max(1, host.clientHeight);
+    renderer.setSize(width, height, false);
+    camera.aspect = width / height; camera.updateProjectionMatrix();
+  }
+  resize();
+  if ("ResizeObserver" in window) new ResizeObserver(resize).observe(host);
+  else window.addEventListener("resize", resize);
+
+  const clock = new THREE.Clock();
+  let frame = 0, paused = false;
+  function animate() {
+    if (paused) return;
+    frame = requestAnimationFrame(animate);
+    const t = clock.getElapsedTime();
+    sculpture.rotation.y += (pointer.x * .24 - sculpture.rotation.y) * .025;
+    sculpture.rotation.x += (-pointer.y * .16 - sculpture.rotation.x) * .025;
+    sculpture.position.y = Math.sin(t * .7) * .12;
+    core.rotation.x = t * .12; core.rotation.y = -t * .16;
+    inner.rotation.y = -t * .2; inner.rotation.z = t * .1;
+    knot.rotation.z = .35 + t * .12;
+    ringA.rotation.z = .12 + t * .09;
+    ringB.rotation.y = -.68 + t * .08;
+    ringC.rotation.x = 1.85 + t * .07;
+    shards.forEach((shard, i) => {
+      shard.position.y += Math.sin(t * .8 + shard.userData.phase) * .0008;
+      shard.rotation.x = t * (.18 + i * .006);
+      shard.rotation.y = t * .22;
+    });
+    particles.rotation.y = t * .018;
+    renderer.render(scene, camera);
+  }
   animate();
-  document.addEventListener("visibilitychange",()=>{paused=document.hidden;if(!paused){clock.start();animate();}else cancelAnimationFrame(frame);});
+  document.addEventListener("visibilitychange", () => {
+    paused = document.hidden;
+    if (paused) cancelAnimationFrame(frame);
+    else { clock.start(); animate(); }
+  });
 })();
