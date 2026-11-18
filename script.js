@@ -278,7 +278,7 @@ document.querySelectorAll(".project-buttons a[href='#']").forEach((link) => {
   warmLight.position.set(2, -5, 3); scene.add(warmLight);
 
   const rig = new THREE.Group();
-  rig.position.set(1.75, .05, -1.1);
+  rig.position.set(0, .05, -1.1);
   scene.add(rig);
 
   // Polished silver/chrome material; highlights are shaped by three moving lights.
@@ -317,30 +317,31 @@ document.querySelectorAll(".project-buttons a[href='#']").forEach((link) => {
   const botDark = new THREE.MeshStandardMaterial({ color: 0x18283e, metalness: .55, roughness: .3 });
   const botGlow = new THREE.MeshBasicMaterial({ color: 0x6cecff });
   const botPositions = [
-    [-4.8, 2.7, -1.8], [4.7, 2.0, -2.2], [-5.0, -.3, -1.4],
-    [5.1, -.8, -1.7], [-3.8, -2.8, -2.0], [3.9, -2.7, -1.5]
+    [-5.2, 3.1, -1.8], [-3.1, 2.7, -2.0], [0, 3.45, -2.2], [3.2, 2.8, -1.9], [5.3, 2.5, -2.1],
+    [-5.4, .7, -1.5], [5.5, .2, -1.7],
+    [-5.0, -2.0, -1.9], [-2.8, -3.2, -2.0], [0, -3.55, -2.2], [3.0, -2.9, -1.8], [5.1, -2.1, -1.7]
   ];
   botPositions.forEach((pos, index) => {
     const bot = new THREE.Group();
-    const body = new THREE.Mesh(new THREE.SphereGeometry(.22, 18, 14), botMetal);
+    const body = new THREE.Mesh(new THREE.SphereGeometry(.16, 18, 14), botMetal);
     body.scale.set(1, 1.12, .82); bot.add(body);
-    const head = new THREE.Mesh(new THREE.SphereGeometry(.17, 18, 14), botDark);
-    head.position.y = .27; bot.add(head);
+    const head = new THREE.Mesh(new THREE.SphereGeometry(.12, 18, 14), botDark);
+    head.position.y = .20; bot.add(head);
     [-.065, .065].forEach(x => {
-      const eye = new THREE.Mesh(new THREE.SphereGeometry(.035, 10, 8), botGlow);
-      eye.position.set(x, .29, .145); bot.add(eye);
+      const eye = new THREE.Mesh(new THREE.SphereGeometry(.025, 10, 8), botGlow);
+      eye.position.set(x, .215, .11); bot.add(eye);
     });
-    const antenna = new THREE.Mesh(new THREE.CylinderGeometry(.012, .018, .13, 8), botMetal);
-    antenna.position.y = .49; bot.add(antenna);
+    const antenna = new THREE.Mesh(new THREE.CylinderGeometry(.009, .013, .10, 8), botMetal);
+    antenna.position.y = .34; bot.add(antenna);
     const tip = new THREE.Mesh(new THREE.SphereGeometry(.035, 10, 8), botGlow);
-    tip.position.y = .56; bot.add(tip);
+    tip.position.y = .405; bot.add(tip);
     [-1, 1].forEach(side => {
-      const arm = new THREE.Mesh(new THREE.CylinderGeometry(.035, .035, .19, 10), botMetal);
+      const arm = new THREE.Mesh(new THREE.CylinderGeometry(.025, .025, .14, 10), botMetal);
       arm.position.set(side * .24, -.02, 0);
       arm.rotation.z = side * -.35; bot.add(arm);
     });
     bot.position.set(...pos);
-    bot.scale.setScalar(.72 + (index % 3) * .12);
+    bot.scale.setScalar(.58 + (index % 3) * .06);
     scene.add(bot);
     bots.push({ group: bot, baseX: pos[0], baseY: pos[1], phase: index * 1.17, speed: .42 + index * .055 });
   });
@@ -356,8 +357,8 @@ document.querySelectorAll(".project-buttons a[href='#']").forEach((link) => {
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
     const narrow = window.innerWidth < 760;
-    rig.position.x = narrow ? 0 : 1.75;
-    rig.scale.setScalar(narrow ? .72 : 1.12);
+    rig.position.x = 0;
+    rig.scale.setScalar(narrow ? .68 : .98);
     rig.position.y = narrow ? -.15 : .05;
   }
   window.addEventListener("resize", resize, { passive: true });
