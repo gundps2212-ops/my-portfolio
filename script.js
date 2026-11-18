@@ -269,14 +269,14 @@ document.querySelectorAll(".project-buttons a[href='#']").forEach((link) => {
   renderer.setClearColor(0x000000, 0);
   if ("outputEncoding" in renderer) renderer.outputEncoding = THREE.sRGBEncoding;
 
-  scene.add(new THREE.HemisphereLight(0xffffff, 0x10131b, 1.9));
-  const keyLight = new THREE.PointLight(0xffffff, 4.6, 32);
+  scene.add(new THREE.HemisphereLight(0x8795ad, 0x05070c, .62));
+  const keyLight = new THREE.PointLight(0x8995aa, 1.15, 26);
   keyLight.position.set(4, 5, 7); scene.add(keyLight);
-  const coolLight = new THREE.PointLight(0xdcecff, 4.2, 28);
+  const coolLight = new THREE.PointLight(0x345b83, 1.0, 22);
   coolLight.position.set(-5, 1, 4); scene.add(coolLight);
-  const warmLight = new THREE.PointLight(0xffffff, 3.4, 26);
+  const warmLight = new THREE.PointLight(0x51416f, .72, 20);
   warmLight.position.set(2, -5, 3); scene.add(warmLight);
-  const rimLight = new THREE.PointLight(0x6b8cff, 1.8, 24);
+  const rimLight = new THREE.PointLight(0x263d68, .8, 22);
   rimLight.position.set(5, -2, -1); scene.add(rimLight);
 
   const rig = new THREE.Group();
@@ -286,16 +286,16 @@ document.querySelectorAll(".project-buttons a[href='#']").forEach((link) => {
   // Polished liquid-chrome / dark-silver metal, matching the supplied reference.
   // Dark graphite base + sharp white reflections create real 3D depth (not a flat white ring).
   const chrome = new THREE.MeshPhongMaterial({
-    color: 0x555b64, specular: 0xffffff, shininess: 230,
-    emissive: 0x080a0e, emissiveIntensity: .12
+    color: 0x171d27, specular: 0x68788e, shininess: 105,
+    emissive: 0x02050a, emissiveIntensity: .08
   });
   const darkChrome = new THREE.MeshPhongMaterial({
-    color: 0x30343b, specular: 0xf4f7ff, shininess: 245,
-    emissive: 0x050609, emissiveIntensity: .10
+    color: 0x0b0e16, specular: 0x596078, shininess: 125,
+    emissive: 0x02030a, emissiveIntensity: .06
   });
   const brightChrome = new THREE.MeshPhongMaterial({
-    color: 0x777d85, specular: 0xffffff, shininess: 255,
-    emissive: 0x0a0c10, emissiveIntensity: .14
+    color: 0x252d39, specular: 0x8290a5, shininess: 115,
+    emissive: 0x03060b, emissiveIntensity: .08
   });
 
   const ringA = new THREE.Mesh(new THREE.TorusGeometry(2.72, .17, 32, 260), chrome);
@@ -308,16 +308,16 @@ document.querySelectorAll(".project-buttons a[href='#']").forEach((link) => {
   // A fine inner orbit adds depth without making the page visually busy.
   const innerOrbit = new THREE.Mesh(
     new THREE.TorusGeometry(1.48, .055, 16, 220),
-    new THREE.MeshPhongMaterial({ color: 0x555b64, specular: 0xffffff, shininess: 235, emissive: 0x080a0e, emissiveIntensity: .12, transparent: true, opacity: .96 })
+    new THREE.MeshPhongMaterial({ color: 0x111722, specular: 0x68788e, shininess: 100, emissive: 0x02050a, emissiveIntensity: .06, transparent: true, opacity: .96 })
   );
   innerOrbit.rotation.set(.9, .4, .1); rig.add(innerOrbit);
 
 
   // Small floating helper bots: lightweight 3D characters distributed around the page.
   const bots = [];
-  const botMetal = new THREE.MeshStandardMaterial({ color: 0x9bb8d2, metalness: .82, roughness: .24 });
-  const botDark = new THREE.MeshStandardMaterial({ color: 0x18283e, metalness: .55, roughness: .3 });
-  const botGlow = new THREE.MeshBasicMaterial({ color: 0x6cecff });
+  const botMetal = new THREE.MeshStandardMaterial({ color: 0x111722, metalness: .68, roughness: .48 });
+  const botDark = new THREE.MeshStandardMaterial({ color: 0x05080e, metalness: .42, roughness: .52 });
+  const botGlow = new THREE.MeshBasicMaterial({ color: 0x16445e });
   const botPositions = [
     [-5.5, 3.2, -1.8], [-3.8, 3.0, -2.0], [-1.9, 3.45, -2.2], [0, 3.55, -2.2], [1.9, 3.35, -2.0], [3.8, 3.0, -1.9], [5.5, 2.8, -2.1],
     [-5.7, 1.0, -1.7], [5.7, .8, -1.8], [-5.7, -.9, -1.8], [5.7, -.8, -1.7],
