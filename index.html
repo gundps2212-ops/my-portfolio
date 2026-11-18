@@ -24,6 +24,9 @@
 </head>
 
 <body>
+  <!-- Full-page animated 3D background -->
+  <canvas id="background-3d-canvas" aria-hidden="true"></canvas>
+
   <!-- Loading Screen -->
   <div class="loader" id="loader">
     <div class="loader-circle"></div>
@@ -102,13 +105,10 @@
       </div>
 
       <div class="hero-image reveal">
-        <div class="three-model-wrap">
-          <canvas id="three-canvas" aria-label="Abstract floating 3D background sculpture"></canvas>
-          <div class="model-orbit-label"><span class="live-dot"></span> ABSTRACT 3D VISUAL</div>
-          <div class="profile-mini">
-            <img src="photo.jpeg" alt="Pratik Gund profile photo">
-            <span>PRATIK GUND</span>
-          </div>
+        <div class="hero-photo-frame">
+          <div class="photo-aura"></div>
+          <img class="hero-profile-photo" src="photo.jpeg" alt="Pratik Gund">
+          <div class="photo-caption"><span class="live-dot"></span> PRATIK GUND <small>WEB DEVELOPER</small></div>
           <div class="floating-card card-one">
             <i class="fa-solid fa-laptop-code"></i>
             <span>Web Developer</span>
