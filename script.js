@@ -284,29 +284,29 @@ document.querySelectorAll(".project-buttons a[href='#']").forEach((link) => {
   // Deep metallic 3D rings: blue titanium, violet alloy and glowing teal.
   // Colored specular highlights keep the rings dimensional without a flat white look.
   const chrome = new THREE.MeshPhongMaterial({
-    color: 0x176b9e, specular: 0x55dfff, shininess: 125,
-    emissive: 0x062b4c, emissiveIntensity: .42
+    color: 0x075078, specular: 0x00aaff, shininess: 165,
+    emissive: 0x031d38, emissiveIntensity: .55
   });
   const darkChrome = new THREE.MeshPhongMaterial({
-    color: 0x39266f, specular: 0xb18aff, shininess: 115,
-    emissive: 0x1b0b42, emissiveIntensity: .38
+    color: 0x24104f, specular: 0x8055ff, shininess: 155,
+    emissive: 0x160632, emissiveIntensity: .52
   });
   const brightChrome = new THREE.MeshPhongMaterial({
-    color: 0x087b83, specular: 0x55fff0, shininess: 145,
-    emissive: 0x03434a, emissiveIntensity: .48
+    color: 0x00605f, specular: 0x00e6cc, shininess: 175,
+    emissive: 0x002e35, emissiveIntensity: .62
   });
 
-  const ringA = new THREE.Mesh(new THREE.TorusGeometry(2.72, .12, 28, 240), chrome);
+  const ringA = new THREE.Mesh(new THREE.TorusGeometry(2.72, .17, 32, 260), chrome);
   ringA.rotation.set(1.08, .25, -.28); rig.add(ringA);
-  const ringB = new THREE.Mesh(new THREE.TorusGeometry(2.08, .085, 24, 220), brightChrome);
+  const ringB = new THREE.Mesh(new THREE.TorusGeometry(2.08, .13, 28, 240), brightChrome);
   ringB.rotation.set(.35, 1.02, .68); rig.add(ringB);
-  const ringC = new THREE.Mesh(new THREE.TorusGeometry(3.18, .06, 20, 240), darkChrome);
+  const ringC = new THREE.Mesh(new THREE.TorusGeometry(3.18, .10, 24, 260), darkChrome);
   ringC.rotation.set(1.42, -.52, .2); rig.add(ringC);
 
   // A fine inner orbit adds depth without making the page visually busy.
   const innerOrbit = new THREE.Mesh(
-    new THREE.TorusGeometry(1.48, .022, 10, 180),
-    new THREE.MeshBasicMaterial({ color: 0xc9e8ff, transparent: true, opacity: .58 })
+    new THREE.TorusGeometry(1.48, .045, 14, 200),
+    new THREE.MeshPhongMaterial({ color: 0x064c68, specular: 0x00cfff, shininess: 150, emissive: 0x032c48, emissiveIntensity: .6, transparent: true, opacity: .9 })
   );
   innerOrbit.rotation.set(.9, .4, .1); rig.add(innerOrbit);
 
@@ -347,22 +347,22 @@ document.querySelectorAll(".project-buttons a[href='#']").forEach((link) => {
   });
 
   // Tiny glowing data particles across the whole screen for a futuristic atmosphere.
-  const dotCount = 220;
+  const dotCount = 620;
   const dotPositions = new Float32Array(dotCount * 3);
   const dotSeeds = [];
   for (let i = 0; i < dotCount; i++) {
-    const x = (Math.random() - .5) * 15.5;
-    const y = (Math.random() - .5) * 9.2;
-    const z = -3.8 - Math.random() * 5.5;
+    const x = (Math.random() - .5) * 18.5;
+    const y = (Math.random() - .5) * 11.5;
+    const z = -2.8 - Math.random() * 7.0;
     dotPositions[i * 3] = x;
     dotPositions[i * 3 + 1] = y;
     dotPositions[i * 3 + 2] = z;
-    dotSeeds.push({ x, y, z, phase: Math.random() * Math.PI * 2, speed: .25 + Math.random() * .55 });
+    dotSeeds.push({ x, y, z, phase: Math.random() * Math.PI * 2, speed: .65 + Math.random() * 1.35, drift: .12 + Math.random() * .25, parallax: .12 + Math.random() * .34 });
   }
   const dotGeometry = new THREE.BufferGeometry();
   dotGeometry.setAttribute("position", new THREE.BufferAttribute(dotPositions, 3));
   const dotMaterial = new THREE.PointsMaterial({
-    color: 0x70d9ff, size: 0.045, transparent: true, opacity: .82,
+    color: 0x20cfff, size: 0.085, transparent: true, opacity: .96,
     sizeAttenuation: true, depthWrite: false, blending: THREE.AdditiveBlending
   });
   const starDots = new THREE.Points(dotGeometry, dotMaterial);
@@ -399,11 +399,12 @@ document.querySelectorAll(".project-buttons a[href='#']").forEach((link) => {
     const viewHalfW = viewHalfH * camera.aspect;
     const dotArray = dotGeometry.attributes.position.array;
     dotSeeds.forEach((dot, i) => {
-      dotArray[i * 3] = dot.x + Math.sin(t * dot.speed + dot.phase) * .055 + pointer.x * .025;
-      dotArray[i * 3 + 1] = dot.y + Math.cos(t * dot.speed + dot.phase) * .075 - pointer.y * .025;
+      dotArray[i * 3] = dot.x + Math.sin(t * dot.speed + dot.phase) * dot.drift + pointer.x * dot.parallax;
+      dotArray[i * 3 + 1] = dot.y + Math.cos(t * dot.speed * .82 + dot.phase) * dot.drift * 1.25 - pointer.y * dot.parallax;
+      dotArray[i * 3 + 2] = dot.z + Math.sin(t * .8 + dot.phase) * .22;
     });
     dotGeometry.attributes.position.needsUpdate = true;
-    dotMaterial.opacity = .62 + (Math.sin(t * 1.1) + 1) * .12;
+    dotMaterial.opacity = .78 + (Math.sin(t * 2.0) + 1) * .11;
 
     bots.forEach((bot, index) => {
       const x = Math.max(-viewHalfW * .88, Math.min(viewHalfW * .88, bot.baseX * Math.min(1, viewHalfW / 5.8)));
@@ -412,11 +413,13 @@ document.querySelectorAll(".project-buttons a[href='#']").forEach((link) => {
       bot.group.rotation.y = Math.sin(t * .65 + bot.phase) * .28 + pointer.x * .12;
       bot.group.rotation.z = Math.sin(t * .9 + bot.phase) * .08;
     });
-    rig.rotation.y += (pointer.x * .32 + Math.sin(t * .24) * .13 - rig.rotation.y) * .025;
-    rig.rotation.x += (-pointer.y * .23 + Math.cos(t * .2) * .09 - rig.rotation.x) * .025;
-    ringA.rotation.z = -.28 + t * .12;
-    ringB.rotation.z = .68 - t * .16;
-    ringC.rotation.y = -.52 + t * .085;
+    rig.rotation.y += (pointer.x * .62 + Math.sin(t * .34) * .22 - rig.rotation.y) * .035;
+    rig.rotation.x += (-pointer.y * .48 + Math.cos(t * .28) * .16 - rig.rotation.x) * .035;
+    ringA.rotation.z = -.28 + t * .24;
+    ringA.rotation.x = 1.08 + Math.sin(t * .42) * .16;
+    ringB.rotation.z = .68 - t * .30;
+    ringB.rotation.x = .35 + Math.cos(t * .36) * .20;
+    ringC.rotation.y = -.52 + t * .18;
     innerOrbit.rotation.z = .1 + t * .2;
     coolLight.position.x = -5 + Math.sin(t * .45) * 1.4;
     warmLight.position.y = -5 + Math.cos(t * .38) * 1.2;
