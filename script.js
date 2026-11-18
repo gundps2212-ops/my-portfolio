@@ -317,9 +317,9 @@ document.querySelectorAll(".project-buttons a[href='#']").forEach((link) => {
   const botDark = new THREE.MeshStandardMaterial({ color: 0x18283e, metalness: .55, roughness: .3 });
   const botGlow = new THREE.MeshBasicMaterial({ color: 0x6cecff });
   const botPositions = [
-    [-5.2, 3.1, -1.8], [-3.1, 2.7, -2.0], [0, 3.45, -2.2], [3.2, 2.8, -1.9], [5.3, 2.5, -2.1],
-    [-5.4, .7, -1.5], [5.5, .2, -1.7],
-    [-5.0, -2.0, -1.9], [-2.8, -3.2, -2.0], [0, -3.55, -2.2], [3.0, -2.9, -1.8], [5.1, -2.1, -1.7]
+    [-5.5, 3.2, -1.8], [-3.8, 3.0, -2.0], [-1.9, 3.45, -2.2], [0, 3.55, -2.2], [1.9, 3.35, -2.0], [3.8, 3.0, -1.9], [5.5, 2.8, -2.1],
+    [-5.7, 1.0, -1.7], [5.7, .8, -1.8], [-5.7, -.9, -1.8], [5.7, -.8, -1.7],
+    [-5.5, -2.8, -1.9], [-3.7, -3.1, -2.0], [-1.8, -3.4, -2.1], [0, -3.55, -2.2], [1.8, -3.3, -2.0], [3.7, -3.0, -1.9], [5.5, -2.7, -1.8]
   ];
   botPositions.forEach((pos, index) => {
     const bot = new THREE.Group();
@@ -341,10 +341,32 @@ document.querySelectorAll(".project-buttons a[href='#']").forEach((link) => {
       arm.rotation.z = side * -.35; bot.add(arm);
     });
     bot.position.set(...pos);
-    bot.scale.setScalar(.58 + (index % 3) * .06);
+    bot.scale.setScalar(.38 + (index % 3) * .045);
     scene.add(bot);
     bots.push({ group: bot, baseX: pos[0], baseY: pos[1], phase: index * 1.17, speed: .42 + index * .055 });
   });
+
+  // Tiny glowing data particles across the whole screen for a futuristic atmosphere.
+  const dotCount = 220;
+  const dotPositions = new Float32Array(dotCount * 3);
+  const dotSeeds = [];
+  for (let i = 0; i < dotCount; i++) {
+    const x = (Math.random() - .5) * 15.5;
+    const y = (Math.random() - .5) * 9.2;
+    const z = -3.8 - Math.random() * 5.5;
+    dotPositions[i * 3] = x;
+    dotPositions[i * 3 + 1] = y;
+    dotPositions[i * 3 + 2] = z;
+    dotSeeds.push({ x, y, z, phase: Math.random() * Math.PI * 2, speed: .25 + Math.random() * .55 });
+  }
+  const dotGeometry = new THREE.BufferGeometry();
+  dotGeometry.setAttribute("position", new THREE.BufferAttribute(dotPositions, 3));
+  const dotMaterial = new THREE.PointsMaterial({
+    color: 0x70d9ff, size: 0.045, transparent: true, opacity: .82,
+    sizeAttenuation: true, depthWrite: false, blending: THREE.AdditiveBlending
+  });
+  const starDots = new THREE.Points(dotGeometry, dotMaterial);
+  scene.add(starDots);
 
   const pointer = { x: 0, y: 0 };
   window.addEventListener("pointermove", event => {
@@ -375,6 +397,14 @@ document.querySelectorAll(".project-buttons a[href='#']").forEach((link) => {
     rig.position.y = (window.innerWidth < 760 ? -.15 : .05) + Math.sin(t * .48) * .2;
     const viewHalfH = Math.tan(THREE.MathUtils.degToRad(camera.fov * .5)) * camera.position.z;
     const viewHalfW = viewHalfH * camera.aspect;
+    const dotArray = dotGeometry.attributes.position.array;
+    dotSeeds.forEach((dot, i) => {
+      dotArray[i * 3] = dot.x + Math.sin(t * dot.speed + dot.phase) * .055 + pointer.x * .025;
+      dotArray[i * 3 + 1] = dot.y + Math.cos(t * dot.speed + dot.phase) * .075 - pointer.y * .025;
+    });
+    dotGeometry.attributes.position.needsUpdate = true;
+    dotMaterial.opacity = .62 + (Math.sin(t * 1.1) + 1) * .12;
+
     bots.forEach((bot, index) => {
       const x = Math.max(-viewHalfW * .88, Math.min(viewHalfW * .88, bot.baseX * Math.min(1, viewHalfW / 5.8)));
       bot.group.position.x = x + Math.sin(t * bot.speed + bot.phase) * .22 + pointer.x * .12;
