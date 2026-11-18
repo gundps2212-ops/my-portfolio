@@ -261,7 +261,7 @@ document.querySelectorAll(".project-buttons a[href='#']").forEach((link) => {
   const THREE = window.THREE;
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(48, window.innerWidth / window.innerHeight, .1, 100);
-  camera.position.set(0, 0, 11);
+  camera.position.set(0, 0, 10.8);
 
   const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.6));
@@ -278,36 +278,72 @@ document.querySelectorAll(".project-buttons a[href='#']").forEach((link) => {
   warmLight.position.set(2, -5, 3); scene.add(warmLight);
 
   const rig = new THREE.Group();
-  rig.position.set(2.45, .05, -1.1);
+  rig.position.set(1.75, .05, -1.1);
   scene.add(rig);
 
   // Polished silver/chrome material; highlights are shaped by three moving lights.
-  const chrome = new THREE.MeshPhysicalMaterial({
-    color: 0xe5edf5, metalness: 1, roughness: .115,
-    clearcoat: 1, clearcoatRoughness: .08
+  // Bright chrome-like Phong materials stay visible even without an environment map.
+  const chrome = new THREE.MeshPhongMaterial({
+    color: 0xcbd7e5, specular: 0xffffff, shininess: 115,
+    emissive: 0x25384d, emissiveIntensity: .28
   });
-  const darkChrome = new THREE.MeshPhysicalMaterial({
-    color: 0x8997a8, metalness: 1, roughness: .19,
-    clearcoat: 1, clearcoatRoughness: .12
+  const darkChrome = new THREE.MeshPhongMaterial({
+    color: 0x71849b, specular: 0xdceeff, shininess: 90,
+    emissive: 0x15283e, emissiveIntensity: .22
   });
-  const brightChrome = new THREE.MeshPhysicalMaterial({
-    color: 0xffffff, metalness: .96, roughness: .075,
-    clearcoat: 1, clearcoatRoughness: .04
+  const brightChrome = new THREE.MeshPhongMaterial({
+    color: 0xf1f7ff, specular: 0xffffff, shininess: 150,
+    emissive: 0x34485e, emissiveIntensity: .32
   });
 
-  const ringA = new THREE.Mesh(new THREE.TorusGeometry(2.05, .105, 28, 220), chrome);
+  const ringA = new THREE.Mesh(new THREE.TorusGeometry(2.72, .12, 28, 240), chrome);
   ringA.rotation.set(1.08, .25, -.28); rig.add(ringA);
-  const ringB = new THREE.Mesh(new THREE.TorusGeometry(1.58, .075, 24, 200), brightChrome);
+  const ringB = new THREE.Mesh(new THREE.TorusGeometry(2.08, .085, 24, 220), brightChrome);
   ringB.rotation.set(.35, 1.02, .68); rig.add(ringB);
-  const ringC = new THREE.Mesh(new THREE.TorusGeometry(2.48, .052, 20, 220), darkChrome);
+  const ringC = new THREE.Mesh(new THREE.TorusGeometry(3.18, .06, 20, 240), darkChrome);
   ringC.rotation.set(1.42, -.52, .2); rig.add(ringC);
 
   // A fine inner orbit adds depth without making the page visually busy.
   const innerOrbit = new THREE.Mesh(
-    new THREE.TorusGeometry(1.12, .018, 10, 160),
+    new THREE.TorusGeometry(1.48, .022, 10, 180),
     new THREE.MeshBasicMaterial({ color: 0xc9e8ff, transparent: true, opacity: .58 })
   );
   innerOrbit.rotation.set(.9, .4, .1); rig.add(innerOrbit);
+
+
+  // Small floating helper bots: lightweight 3D characters distributed around the page.
+  const bots = [];
+  const botMetal = new THREE.MeshStandardMaterial({ color: 0x9bb8d2, metalness: .82, roughness: .24 });
+  const botDark = new THREE.MeshStandardMaterial({ color: 0x18283e, metalness: .55, roughness: .3 });
+  const botGlow = new THREE.MeshBasicMaterial({ color: 0x6cecff });
+  const botPositions = [
+    [-4.8, 2.7, -1.8], [4.7, 2.0, -2.2], [-5.0, -.3, -1.4],
+    [5.1, -.8, -1.7], [-3.8, -2.8, -2.0], [3.9, -2.7, -1.5]
+  ];
+  botPositions.forEach((pos, index) => {
+    const bot = new THREE.Group();
+    const body = new THREE.Mesh(new THREE.SphereGeometry(.22, 18, 14), botMetal);
+    body.scale.set(1, 1.12, .82); bot.add(body);
+    const head = new THREE.Mesh(new THREE.SphereGeometry(.17, 18, 14), botDark);
+    head.position.y = .27; bot.add(head);
+    [-.065, .065].forEach(x => {
+      const eye = new THREE.Mesh(new THREE.SphereGeometry(.035, 10, 8), botGlow);
+      eye.position.set(x, .29, .145); bot.add(eye);
+    });
+    const antenna = new THREE.Mesh(new THREE.CylinderGeometry(.012, .018, .13, 8), botMetal);
+    antenna.position.y = .49; bot.add(antenna);
+    const tip = new THREE.Mesh(new THREE.SphereGeometry(.035, 10, 8), botGlow);
+    tip.position.y = .56; bot.add(tip);
+    [-1, 1].forEach(side => {
+      const arm = new THREE.Mesh(new THREE.CapsuleGeometry(.035, .13, 3, 7), botMetal);
+      arm.position.set(side * .24, -.02, 0);
+      arm.rotation.z = side * -.35; bot.add(arm);
+    });
+    bot.position.set(...pos);
+    bot.scale.setScalar(.72 + (index % 3) * .12);
+    scene.add(bot);
+    bots.push({ group: bot, baseX: pos[0], baseY: pos[1], phase: index * 1.17, speed: .42 + index * .055 });
+  });
 
   const pointer = { x: 0, y: 0 };
   window.addEventListener("pointermove", event => {
@@ -320,8 +356,8 @@ document.querySelectorAll(".project-buttons a[href='#']").forEach((link) => {
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
     const narrow = window.innerWidth < 760;
-    rig.position.x = narrow ? 0 : 2.45;
-    rig.scale.setScalar(narrow ? .72 : 1);
+    rig.position.x = narrow ? 0 : 1.75;
+    rig.scale.setScalar(narrow ? .72 : 1.12);
     rig.position.y = narrow ? -.15 : .05;
   }
   window.addEventListener("resize", resize, { passive: true });
@@ -336,6 +372,15 @@ document.querySelectorAll(".project-buttons a[href='#']").forEach((link) => {
 
     // Gentle automatic orbit always runs; pointer movement adds responsive tilt.
     rig.position.y = (window.innerWidth < 760 ? -.15 : .05) + Math.sin(t * .48) * .2;
+    const viewHalfH = Math.tan(THREE.MathUtils.degToRad(camera.fov * .5)) * camera.position.z;
+    const viewHalfW = viewHalfH * camera.aspect;
+    bots.forEach((bot, index) => {
+      const x = Math.max(-viewHalfW * .88, Math.min(viewHalfW * .88, bot.baseX * Math.min(1, viewHalfW / 5.8)));
+      bot.group.position.x = x + Math.sin(t * bot.speed + bot.phase) * .22 + pointer.x * .12;
+      bot.group.position.y = bot.baseY * Math.min(1, viewHalfH / 3.5) + Math.sin(t * (bot.speed + .28) + bot.phase) * .24 - pointer.y * .08;
+      bot.group.rotation.y = Math.sin(t * .65 + bot.phase) * .28 + pointer.x * .12;
+      bot.group.rotation.z = Math.sin(t * .9 + bot.phase) * .08;
+    });
     rig.rotation.y += (pointer.x * .32 + Math.sin(t * .24) * .13 - rig.rotation.y) * .025;
     rig.rotation.x += (-pointer.y * .23 + Math.cos(t * .2) * .09 - rig.rotation.x) * .025;
     ringA.rotation.z = -.28 + t * .12;
