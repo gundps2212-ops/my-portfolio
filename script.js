@@ -335,7 +335,7 @@ document.querySelectorAll(".project-buttons a[href='#']").forEach((link) => {
     const tip = new THREE.Mesh(new THREE.SphereGeometry(.035, 10, 8), botGlow);
     tip.position.y = .56; bot.add(tip);
     [-1, 1].forEach(side => {
-      const arm = new THREE.Mesh(new THREE.CapsuleGeometry(.035, .13, 3, 7), botMetal);
+      const arm = new THREE.Mesh(new THREE.CylinderGeometry(.035, .035, .19, 10), botMetal);
       arm.position.set(side * .24, -.02, 0);
       arm.rotation.z = side * -.35; bot.add(arm);
     });
