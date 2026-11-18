@@ -270,30 +270,30 @@ document.querySelectorAll(".project-buttons a[href='#']").forEach((link) => {
   if ("outputEncoding" in renderer) renderer.outputEncoding = THREE.sRGBEncoding;
 
   scene.add(new THREE.HemisphereLight(0xe8f5ff, 0x20202b, 1.65));
-  const keyLight = new THREE.PointLight(0xffffff, 3.2, 30);
+  const keyLight = new THREE.PointLight(0x4d9dff, 2.5, 30);
   keyLight.position.set(4, 5, 7); scene.add(keyLight);
-  const coolLight = new THREE.PointLight(0x72cfff, 3.4, 24);
+  const coolLight = new THREE.PointLight(0x00d9ff, 3.8, 24);
   coolLight.position.set(-5, 1, 4); scene.add(coolLight);
-  const warmLight = new THREE.PointLight(0x9c8cff, 2.5, 22);
+  const warmLight = new THREE.PointLight(0x8b55ff, 3.0, 22);
   warmLight.position.set(2, -5, 3); scene.add(warmLight);
 
   const rig = new THREE.Group();
   rig.position.set(0, .05, -1.1);
   scene.add(rig);
 
-  // Polished silver/chrome material; highlights are shaped by three moving lights.
-  // Bright chrome-like Phong materials remain visible without an environment map.
+  // Deep metallic 3D rings: blue titanium, violet alloy and glowing teal.
+  // Colored specular highlights keep the rings dimensional without a flat white look.
   const chrome = new THREE.MeshPhongMaterial({
-    color: 0xcbd7e5, specular: 0xffffff, shininess: 115,
-    emissive: 0x25384d, emissiveIntensity: .28
+    color: 0x176b9e, specular: 0x55dfff, shininess: 125,
+    emissive: 0x062b4c, emissiveIntensity: .42
   });
   const darkChrome = new THREE.MeshPhongMaterial({
-    color: 0x71849b, specular: 0xdceeff, shininess: 90,
-    emissive: 0x15283e, emissiveIntensity: .22
+    color: 0x39266f, specular: 0xb18aff, shininess: 115,
+    emissive: 0x1b0b42, emissiveIntensity: .38
   });
   const brightChrome = new THREE.MeshPhongMaterial({
-    color: 0xf1f7ff, specular: 0xffffff, shininess: 150,
-    emissive: 0x34485e, emissiveIntensity: .32
+    color: 0x087b83, specular: 0x55fff0, shininess: 145,
+    emissive: 0x03434a, emissiveIntensity: .48
   });
 
   const ringA = new THREE.Mesh(new THREE.TorusGeometry(2.72, .12, 28, 240), chrome);
