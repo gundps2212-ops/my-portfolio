@@ -268,3 +268,33 @@ body::before,body::after{display:none}
 @media(prefers-reduced-motion:reduce){
   .photo-aura{animation:none}
 }
+
+
+/* CHROME RINGS + TRUE 3D PORTRAIT DEPTH */
+.hero-bg::before,.hero-bg::after{display:none!important}
+.hero-photo-frame{
+  perspective:1100px;
+  transform-style:preserve-3d;
+  transition:transform .22s ease-out;
+}
+.hero-profile-photo{
+  transform:translate3d(var(--photo-shift-x,0),var(--photo-shift-y,0),24px)
+    rotateX(var(--photo-rotate-x,0deg)) rotateY(var(--photo-rotate-y,0deg));
+  transform-style:preserve-3d;
+  transition:transform .28s cubic-bezier(.2,.75,.25,1),box-shadow .3s ease;
+  will-change:transform;
+}
+.hero-photo-frame.photo-hovering .hero-profile-photo{
+  box-shadow:0 35px 100px rgba(0,0,0,.58),0 0 65px rgba(120,205,255,.25);
+}
+.hero-photo-frame .photo-aura{transform:translateZ(-35px) scale(1.08)}
+.hero-photo-frame .photo-caption{transform:translate3d(-50%,0,55px)}
+.hero-photo-frame .floating-card{transform:translateZ(75px)}
+#background-3d-canvas{opacity:.9}
+@media(max-width:760px){
+  .hero-photo-frame{perspective:900px}
+  .hero-profile-photo{transform:translateZ(16px)}
+}
+@media(prefers-reduced-motion:reduce){
+  .hero-profile-photo{transition:none}
+}
