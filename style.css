@@ -247,12 +247,12 @@ a{text-decoration:none;color:inherit}ul{list-style:none}button,input,textarea{fo
 
 /* Minimal dark base; the animated 3D object is the visual background */
 body{
-  background-color:#070914;
+  background-color:#020308;
   background-image:
-    radial-gradient(ellipse at 18% 18%,rgba(0,145,255,.20),transparent 43%),
-    radial-gradient(ellipse at 82% 72%,rgba(104,75,255,.17),transparent 48%),
-    radial-gradient(ellipse at 52% 48%,rgba(30,125,205,.10),transparent 58%),
-    linear-gradient(135deg,#070914 0%,#0b1224 48%,#080b17 100%);
+    radial-gradient(ellipse at 18% 18%,rgba(0,90,150,.12),transparent 43%),
+    radial-gradient(ellipse at 82% 72%,rgba(62,45,120,.10),transparent 48%),
+    radial-gradient(ellipse at 52% 48%,rgba(18,48,78,.08),transparent 58%),
+    linear-gradient(135deg,#020308 0%,#050812 48%,#020307 100%);
   background-attachment:fixed;
 }
 body::before,body::after{display:none}
