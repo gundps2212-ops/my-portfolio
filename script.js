@@ -261,7 +261,7 @@ document.querySelectorAll(".project-buttons a[href='#']").forEach((link) => {
   const THREE = window.THREE;
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(48, window.innerWidth / window.innerHeight, .1, 100);
-  camera.position.set(0, 0, 10.2);
+  camera.position.set(0, 0, 10.8);
 
   const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.6));
@@ -278,21 +278,22 @@ document.querySelectorAll(".project-buttons a[href='#']").forEach((link) => {
   warmLight.position.set(2, -5, 3); scene.add(warmLight);
 
   const rig = new THREE.Group();
-  rig.position.set(2.05, .05, -1.1);
+  rig.position.set(1.75, .05, -1.1);
   scene.add(rig);
 
   // Polished silver/chrome material; highlights are shaped by three moving lights.
-  const chrome = new THREE.MeshPhysicalMaterial({
-    color: 0xe5edf5, metalness: 1, roughness: .115,
-    clearcoat: 1, clearcoatRoughness: .08
+  // Bright chrome-like Phong materials remain visible without an environment map.
+  const chrome = new THREE.MeshPhongMaterial({
+    color: 0xcbd7e5, specular: 0xffffff, shininess: 115,
+    emissive: 0x25384d, emissiveIntensity: .28
   });
-  const darkChrome = new THREE.MeshPhysicalMaterial({
-    color: 0x8997a8, metalness: 1, roughness: .19,
-    clearcoat: 1, clearcoatRoughness: .12
+  const darkChrome = new THREE.MeshPhongMaterial({
+    color: 0x71849b, specular: 0xdceeff, shininess: 90,
+    emissive: 0x15283e, emissiveIntensity: .22
   });
-  const brightChrome = new THREE.MeshPhysicalMaterial({
-    color: 0xffffff, metalness: .96, roughness: .075,
-    clearcoat: 1, clearcoatRoughness: .04
+  const brightChrome = new THREE.MeshPhongMaterial({
+    color: 0xf1f7ff, specular: 0xffffff, shininess: 150,
+    emissive: 0x34485e, emissiveIntensity: .32
   });
 
   const ringA = new THREE.Mesh(new THREE.TorusGeometry(2.72, .12, 28, 240), chrome);
@@ -355,8 +356,8 @@ document.querySelectorAll(".project-buttons a[href='#']").forEach((link) => {
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
     const narrow = window.innerWidth < 760;
-    rig.position.x = narrow ? 0 : 2.05;
-    rig.scale.setScalar(narrow ? .58 : 1.12);
+    rig.position.x = narrow ? 0 : 1.75;
+    rig.scale.setScalar(narrow ? .72 : 1.12);
     rig.position.y = narrow ? -.15 : .05;
   }
   window.addEventListener("resize", resize, { passive: true });
