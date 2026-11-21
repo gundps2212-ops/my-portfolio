@@ -278,9 +278,9 @@ document.querySelectorAll(".project-buttons a[href='#']").forEach((link) => {
   const rimLight = new THREE.PointLight(0x16a9ff, 1.2, 22);
   rimLight.position.set(1, 4, -4); scene.add(rimLight);
 
-  // The orb sits slightly to the right so it complements the hero copy and portrait.
+  // Center the orb in the viewport so it remains the visual focus across every section.
   const orbRig = new THREE.Group();
-  orbRig.position.set(2.8, .05, -1.1);
+  orbRig.position.set(0, 0, -1.1);
   scene.add(orbRig);
 
   const coreMaterial = new THREE.MeshPhongMaterial({
@@ -386,10 +386,16 @@ document.querySelectorAll(".project-buttons a[href='#']").forEach((link) => {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
-    const narrow = window.innerWidth < 760;
-    orbRig.position.set(narrow ? 2.0 : 2.8, narrow ? -.15 : .05, -1.1);
-    orbRig.scale.setScalar(narrow ? .68 : .92);
-    canvas.style.opacity = narrow ? ".62" : ".82";
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+    const mobile = width <= 600;
+    const tablet = width > 600 && width <= 1024;
+    // Keep a generous orb on desktop, then scale it to fit tablet and phone screens.
+    const responsiveScale = mobile ? .78 : tablet ? .94 : 1.14;
+    orbRig.position.set(0, 0, -1.1);
+    orbRig.scale.setScalar(responsiveScale);
+    canvas.style.opacity = mobile ? ".68" : tablet ? ".76" : ".84";
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, mobile ? 1.15 : 1.5));
   }
   window.addEventListener("resize", resize, { passive: true });
   resize();
@@ -407,7 +413,7 @@ document.querySelectorAll(".project-buttons a[href='#']").forEach((link) => {
 
     orbRig.rotation.y += ((pointer.x * .42 + Math.sin(t * .24) * .12) - orbRig.rotation.y) * .035;
     orbRig.rotation.x += ((-pointer.y * .32 + Math.cos(t * .2) * .1) - orbRig.rotation.x) * .035;
-    orbRig.position.y = (window.innerWidth < 760 ? -.15 : .05) + Math.sin(t * .42) * .12 * motion;
+    orbRig.position.y = Math.sin(t * .42) * .12 * motion;
     core.rotation.y = t * .08 * motion;
     innerSphere.rotation.y = -t * .12 * motion;
     innerSphere.rotation.x = t * .06 * motion;
