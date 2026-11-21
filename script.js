@@ -310,7 +310,14 @@ document.querySelectorAll(".project-buttons a[href='#']").forEach((link) => {
     new THREE.TorusGeometry(1.48, .055, 16, 220),
     new THREE.MeshPhongMaterial({ color: 0x111722, specular: 0x68788e, shininess: 100, emissive: 0x02050a, emissiveIntensity: .06, transparent: true, opacity: .96 })
   );
-  innerOrbit.rotation.set(.9, .4, .1); rig.add(innerOrbit);\n\n  // Extra precision orbit: a slim dark-metal ring with a subtle cyan edge reflection.\n  const detailOrbit = new THREE.Mesh(\n    new THREE.TorusGeometry(2.42, .035, 12, 240),\n    new THREE.MeshPhongMaterial({ color: 0x101722, specular: 0x3d718d, shininess: 135, emissive: 0x03101a, emissiveIntensity: .12, transparent: true, opacity: .9 })\n  );\n  detailOrbit.rotation.set(.62, -.72, .42); rig.add(detailOrbit);
+  innerOrbit.rotation.set(.9, .4, .1); rig.add(innerOrbit);
+
+  // Extra precision orbit: a slim dark-metal ring with a subtle cyan edge reflection.
+  const detailOrbit = new THREE.Mesh(
+    new THREE.TorusGeometry(2.42, .035, 12, 240),
+    new THREE.MeshPhongMaterial({ color: 0x101722, specular: 0x3d718d, shininess: 135, emissive: 0x03101a, emissiveIntensity: .12, transparent: true, opacity: .9 })
+  );
+  detailOrbit.rotation.set(.62, -.72, .42); rig.add(detailOrbit);
 
 
   // Small floating helper bots: lightweight 3D characters distributed around the page.
@@ -422,7 +429,9 @@ document.querySelectorAll(".project-buttons a[href='#']").forEach((link) => {
     ringB.rotation.z = .68 - t * .30;
     ringB.rotation.x = .35 + Math.cos(t * .36) * .20;
     ringC.rotation.y = -.52 + t * .18;
-    innerOrbit.rotation.z = .1 + t * .2;\n    detailOrbit.rotation.y = -.72 + t * .16;\n    detailOrbit.rotation.z = .42 - t * .12;
+    innerOrbit.rotation.z = .1 + t * .2;
+    detailOrbit.rotation.y = -.72 + t * .16;
+    detailOrbit.rotation.z = .42 - t * .12;
     coolLight.position.x = -5 + Math.sin(t * .45) * 1.4;
     warmLight.position.y = -5 + Math.cos(t * .38) * 1.2;
     rimLight.position.x = 5 + Math.cos(t * .32) * 1.2;
