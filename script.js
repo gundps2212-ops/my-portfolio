@@ -258,6 +258,11 @@ document.querySelectorAll(".project-buttons a[href='#']").forEach((link) => {
   const THREE = window.THREE;
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+  const progressTrack=document.createElement("div");
+  progressTrack.className="scroll-progress-track";
+  progressTrack.innerHTML='<div class="scroll-progress-bar"></div>';
+  document.body.appendChild(progressTrack);
+  const progressBar=progressTrack.firstElementChild;
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(48, 1, .1, 100);
   camera.position.set(0, 0, 11.5);
@@ -327,6 +332,7 @@ document.querySelectorAll(".project-buttons a[href='#']").forEach((link) => {
     scrollFrame=0;
     const max=Math.max(1,document.documentElement.scrollHeight-window.innerHeight);
     scroll.progress=window.scrollY/max;
+    if(progressBar) progressBar.style.width=(scroll.progress*100).toFixed(2)+"%";
   }
   window.addEventListener("scroll",()=>{if(!scrollFrame)scrollFrame=requestAnimationFrame(updateScroll);},{passive:true});
   updateScroll();
