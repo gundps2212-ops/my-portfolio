@@ -251,135 +251,129 @@ document.querySelectorAll(".project-buttons a[href='#']").forEach((link) => {
 });
 
 
-// FULL-PAGE THREE.JS BACKGROUND: interactive 3D energy orb
+// FULL-PAGE THREE.JS BACKGROUND: premium floating chrome rings
 (function initPageBackground3D() {
   const canvas = document.getElementById("background-3d-canvas");
   if (!canvas || !window.THREE) {
     console.warn("Three.js background unavailable. Check CDN connection.");
     return;
   }
-
   const THREE = window.THREE;
   const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(46, window.innerWidth / window.innerHeight, .1, 100);
-  camera.position.set(0, 0, 12);
+  const camera = new THREE.PerspectiveCamera(48, window.innerWidth / window.innerHeight, .1, 100);
+  camera.position.set(0, 0, 10.8);
 
-  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true, powerPreference: "low-power" });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
+  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.6));
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.setClearColor(0x000000, 0);
   if ("outputEncoding" in renderer) renderer.outputEncoding = THREE.sRGBEncoding;
 
-  scene.add(new THREE.HemisphereLight(0x8da8d8, 0x080b20, .8));
-  const keyLight = new THREE.PointLight(0x31cfff, 2.1, 28);
-  keyLight.position.set(3, 4, 6); scene.add(keyLight);
-  const violetLight = new THREE.PointLight(0x7950ff, 2.0, 24);
-  violetLight.position.set(-4, -2, 3); scene.add(violetLight);
-  const rimLight = new THREE.PointLight(0x16a9ff, 1.2, 22);
-  rimLight.position.set(1, 4, -4); scene.add(rimLight);
+  scene.add(new THREE.HemisphereLight(0x8795ad, 0x05070c, .62));
+  const keyLight = new THREE.PointLight(0x8995aa, 1.15, 26);
+  keyLight.position.set(4, 5, 7); scene.add(keyLight);
+  const coolLight = new THREE.PointLight(0x345b83, 1.0, 22);
+  coolLight.position.set(-5, 1, 4); scene.add(coolLight);
+  const warmLight = new THREE.PointLight(0x51416f, .72, 20);
+  warmLight.position.set(2, -5, 3); scene.add(warmLight);
+  const rimLight = new THREE.PointLight(0x263d68, .8, 22);
+  rimLight.position.set(5, -2, -1); scene.add(rimLight);
 
-  // The orb sits slightly to the right so it complements the hero copy and portrait.
-  const orbRig = new THREE.Group();
-  orbRig.position.set(2.8, .05, -1.1);
-  scene.add(orbRig);
+  const rig = new THREE.Group();
+  rig.position.set(0, .05, -1.1);
+  scene.add(rig);
 
-  const coreMaterial = new THREE.MeshPhongMaterial({
-    color: 0x101b3a, specular: 0x8cecff, shininess: 95,
-    emissive: 0x071b42, emissiveIntensity: .75,
-    transparent: true, opacity: .94
+  // Polished liquid-chrome / dark-silver metal, matching the supplied reference.
+  // Dark graphite base + sharp white reflections create real 3D depth (not a flat white ring).
+  const chrome = new THREE.MeshPhongMaterial({
+    color: 0x171d27, specular: 0x68788e, shininess: 105,
+    emissive: 0x02050a, emissiveIntensity: .08
   });
-  const core = new THREE.Mesh(new THREE.SphereGeometry(1.48, 64, 48), coreMaterial);
-  orbRig.add(core);
-
-  const innerSphere = new THREE.Mesh(
-    new THREE.SphereGeometry(1.23, 48, 36),
-    new THREE.MeshBasicMaterial({ color: 0x102c69, wireframe: true, transparent: true, opacity: .2 })
-  );
-  orbRig.add(innerSphere);
-
-  const shell = new THREE.Mesh(
-    new THREE.SphereGeometry(1.62, 48, 36),
-    new THREE.MeshBasicMaterial({ color: 0x42cfff, wireframe: true, transparent: true, opacity: .13 })
-  );
-  orbRig.add(shell);
-
-  const halo = new THREE.Mesh(
-    new THREE.SphereGeometry(1.78, 48, 36),
-    new THREE.MeshBasicMaterial({ color: 0x247cff, side: THREE.BackSide, transparent: true, opacity: .055 })
-  );
-  orbRig.add(halo);
-
-  const orbitMaterial = new THREE.MeshPhongMaterial({
-    color: 0x1b477b, specular: 0x75eaff, shininess: 100,
-    emissive: 0x09234b, emissiveIntensity: .8,
-    transparent: true, opacity: .9
+  const darkChrome = new THREE.MeshPhongMaterial({
+    color: 0x0b0e16, specular: 0x596078, shininess: 125,
+    emissive: 0x02030a, emissiveIntensity: .06
   });
-  const orbitA = new THREE.Mesh(new THREE.TorusGeometry(2.12, .035, 12, 180), orbitMaterial);
-  orbitA.rotation.set(1.08, .28, -.24); orbRig.add(orbitA);
-  const orbitB = new THREE.Mesh(new THREE.TorusGeometry(2.34, .022, 10, 180), orbitMaterial.clone());
-  orbitB.rotation.set(.32, 1.1, .72); orbRig.add(orbitB);
-  const orbitC = new THREE.Mesh(new THREE.TorusGeometry(1.88, .018, 10, 180), orbitMaterial.clone());
-  orbitC.rotation.set(1.45, -.45, .18); orbRig.add(orbitC);
+  const brightChrome = new THREE.MeshPhongMaterial({
+    color: 0x252d39, specular: 0x8290a5, shininess: 115,
+    emissive: 0x03060b, emissiveIntensity: .08
+  });
 
-  // Curved energy filaments wrap around the sphere and slowly travel with it.
-  const energyMaterials = [
-    new THREE.MeshBasicMaterial({ color: 0x5beaff, transparent: true, opacity: .72 }),
-    new THREE.MeshBasicMaterial({ color: 0x9874ff, transparent: true, opacity: .55 }),
-    new THREE.MeshBasicMaterial({ color: 0x238dff, transparent: true, opacity: .5 })
+  const ringA = new THREE.Mesh(new THREE.TorusGeometry(2.72, .17, 32, 260), chrome);
+  ringA.rotation.set(1.08, .25, -.28); rig.add(ringA);
+  const ringB = new THREE.Mesh(new THREE.TorusGeometry(2.08, .13, 28, 240), brightChrome);
+  ringB.rotation.set(.35, 1.02, .68); rig.add(ringB);
+  const ringC = new THREE.Mesh(new THREE.TorusGeometry(3.18, .10, 24, 260), darkChrome);
+  ringC.rotation.set(1.42, -.52, .2); rig.add(ringC);
+
+  // A fine inner orbit adds depth without making the page visually busy.
+  const innerOrbit = new THREE.Mesh(
+    new THREE.TorusGeometry(1.48, .055, 16, 220),
+    new THREE.MeshPhongMaterial({ color: 0x111722, specular: 0x68788e, shininess: 100, emissive: 0x02050a, emissiveIntensity: .06, transparent: true, opacity: .96 })
+  );
+  innerOrbit.rotation.set(.9, .4, .1); rig.add(innerOrbit);\n\n  // Extra precision orbit: a slim dark-metal ring with a subtle cyan edge reflection.\n  const detailOrbit = new THREE.Mesh(\n    new THREE.TorusGeometry(2.42, .035, 12, 240),\n    new THREE.MeshPhongMaterial({ color: 0x101722, specular: 0x3d718d, shininess: 135, emissive: 0x03101a, emissiveIntensity: .12, transparent: true, opacity: .9 })\n  );\n  detailOrbit.rotation.set(.62, -.72, .42); rig.add(detailOrbit);
+
+
+  // Small floating helper bots: lightweight 3D characters distributed around the page.
+  const bots = [];
+  const botMetal = new THREE.MeshStandardMaterial({ color: 0x111722, metalness: .68, roughness: .48 });
+  const botDark = new THREE.MeshStandardMaterial({ color: 0x05080e, metalness: .42, roughness: .52 });
+  const botGlow = new THREE.MeshBasicMaterial({ color: 0x16445e });
+  const botPositions = [
+    [-5.5, 3.2, -1.8], [-3.8, 3.0, -2.0], [-1.9, 3.45, -2.2], [0, 3.55, -2.2], [1.9, 3.35, -2.0], [3.8, 3.0, -1.9], [5.5, 2.8, -2.1],
+    [-5.7, 1.0, -1.7], [5.7, .8, -1.8], [-5.7, -.9, -1.8], [5.7, -.8, -1.7],
+    [-5.5, -2.8, -1.9], [-3.7, -3.1, -2.0], [-1.8, -3.4, -2.1], [0, -3.55, -2.2], [1.8, -3.3, -2.0], [3.7, -3.0, -1.9], [5.5, -2.7, -1.8]
   ];
-  const filaments = [];
-  for (let k = 0; k < 3; k++) {
-    const points = [];
-    const radius = 1.52 + k * .055;
-    for (let i = 0; i <= 100; i++) {
-      const u = i / 100 * Math.PI * 2;
-      const v = Math.sin(u * (2 + k) + k) * .42;
-      points.push(new THREE.Vector3(
-        Math.cos(u) * radius * Math.cos(v),
-        Math.sin(u) * radius * Math.cos(v),
-        Math.sin(v) * radius
-      ));
-    }
-    const curve = new THREE.CatmullRomCurve3(points);
-    const line = new THREE.Mesh(new THREE.TubeGeometry(curve, 180, .012, 5, false), energyMaterials[k]);
-    line.rotation.set(k * .85, k * .62, k * .4);
-    orbRig.add(line);
-    filaments.push(line);
-  }
+  botPositions.forEach((pos, index) => {
+    const bot = new THREE.Group();
+    const body = new THREE.Mesh(new THREE.SphereGeometry(.16, 18, 14), botMetal);
+    body.scale.set(1, 1.12, .82); bot.add(body);
+    const head = new THREE.Mesh(new THREE.SphereGeometry(.12, 18, 14), botDark);
+    head.position.y = .20; bot.add(head);
+    [-.065, .065].forEach(x => {
+      const eye = new THREE.Mesh(new THREE.SphereGeometry(.025, 10, 8), botGlow);
+      eye.position.set(x, .215, .11); bot.add(eye);
+    });
+    const antenna = new THREE.Mesh(new THREE.CylinderGeometry(.009, .013, .10, 8), botMetal);
+    antenna.position.y = .34; bot.add(antenna);
+    const tip = new THREE.Mesh(new THREE.SphereGeometry(.035, 10, 8), botGlow);
+    tip.position.y = .405; bot.add(tip);
+    [-1, 1].forEach(side => {
+      const arm = new THREE.Mesh(new THREE.CylinderGeometry(.025, .025, .14, 10), botMetal);
+      arm.position.set(side * .24, -.02, 0);
+      arm.rotation.z = side * -.35; bot.add(arm);
+    });
+    bot.position.set(...pos);
+    bot.scale.setScalar(.38 + (index % 3) * .045);
+    scene.add(bot);
+    bots.push({ group: bot, baseX: pos[0], baseY: pos[1], phase: index * 1.17, speed: .42 + index * .055 });
+  });
 
-  // Tiny satellites orbit the energy sphere.
-  const satellites = [];
-  const satelliteMaterial = new THREE.MeshBasicMaterial({ color: 0x8cecff });
-  for (let i = 0; i < 8; i++) {
-    const satellite = new THREE.Mesh(new THREE.SphereGeometry(i % 3 === 0 ? .055 : .032, 12, 10), satelliteMaterial);
-    orbRig.add(satellite);
-    satellites.push({ mesh: satellite, angle: i / 8 * Math.PI * 2, radius: 2.2 + (i % 2) * .28, speed: .22 + (i % 3) * .08, tilt: i % 2 ? .7 : -.55 });
+  // Tiny glowing data particles across the whole screen for a futuristic atmosphere.
+  const dotCount = 1700;
+  const dotPositions = new Float32Array(dotCount * 3);
+  const dotSeeds = [];
+  for (let i = 0; i < dotCount; i++) {
+    const x = (Math.random() - .5) * 20.5;
+    const y = (Math.random() - .5) * 13.5;
+    const z = -2.8 - Math.random() * 7.0;
+    dotPositions[i * 3] = x;
+    dotPositions[i * 3 + 1] = y;
+    dotPositions[i * 3 + 2] = z;
+    dotSeeds.push({ x, y, z, phase: Math.random() * Math.PI * 2, speed: .85 + Math.random() * 1.8, drift: .28 + Math.random() * .58, parallax: .28 + Math.random() * .72 });
   }
-
-  // Background particles add depth without obscuring text.
-  const particleCount = 760;
-  const positions = new Float32Array(particleCount * 3);
-  const seeds = [];
-  for (let i = 0; i < particleCount; i++) {
-    const x = (Math.random() - .5) * 20;
-    const y = (Math.random() - .5) * 13;
-    const z = -3 - Math.random() * 8;
-    positions.set([x, y, z], i * 3);
-    seeds.push({ x, y, z, phase: Math.random() * Math.PI * 2, speed: .25 + Math.random() * .55 });
-  }
-  const particleGeometry = new THREE.BufferGeometry();
-  particleGeometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
-  const particles = new THREE.Points(particleGeometry, new THREE.PointsMaterial({
-    color: 0x56cfff, size: .045, transparent: true, opacity: .58,
+  const dotGeometry = new THREE.BufferGeometry();
+  dotGeometry.setAttribute("position", new THREE.BufferAttribute(dotPositions, 3));
+  const dotMaterial = new THREE.PointsMaterial({
+    color: 0x48cfff, size: 0.068, transparent: true, opacity: .92,
     sizeAttenuation: true, depthWrite: false, blending: THREE.AdditiveBlending
-  }));
-  scene.add(particles);
+  });
+  const starDots = new THREE.Points(dotGeometry, dotMaterial);
+  scene.add(starDots);
 
-  const pointer = { x: 0, y: 0, targetX: 0, targetY: 0 };
-  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const pointer = { x: 0, y: 0 };
   window.addEventListener("pointermove", event => {
-    pointer.targetX = (event.clientX / window.innerWidth - .5) * 2;
-    pointer.targetY = (event.clientY / window.innerHeight - .5) * 2;
+    pointer.x = (event.clientX / window.innerWidth - .5) * 2;
+    pointer.y = (event.clientY / window.innerHeight - .5) * 2;
   }, { passive: true });
 
   function resize() {
@@ -387,65 +381,61 @@ document.querySelectorAll(".project-buttons a[href='#']").forEach((link) => {
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
     const narrow = window.innerWidth < 760;
-    orbRig.position.set(narrow ? 2.0 : 2.8, narrow ? -.15 : .05, -1.1);
-    orbRig.scale.setScalar(narrow ? .68 : .92);
-    canvas.style.opacity = narrow ? ".62" : ".82";
+    rig.position.x = 0;
+    rig.scale.setScalar(narrow ? .68 : .98);
+    rig.position.y = narrow ? -.15 : .05;
   }
   window.addEventListener("resize", resize, { passive: true });
   resize();
 
   const clock = new THREE.Clock();
-  let frame = 0;
-  let paused = document.hidden;
+  let frame = 0, paused = false;
   function animate() {
     if (paused) return;
     frame = requestAnimationFrame(animate);
     const t = clock.getElapsedTime();
-    const motion = reducedMotion ? .12 : 1;
-    pointer.x += (pointer.targetX - pointer.x) * .035;
-    pointer.y += (pointer.targetY - pointer.y) * .035;
 
-    orbRig.rotation.y += ((pointer.x * .42 + Math.sin(t * .24) * .12) - orbRig.rotation.y) * .035;
-    orbRig.rotation.x += ((-pointer.y * .32 + Math.cos(t * .2) * .1) - orbRig.rotation.x) * .035;
-    orbRig.position.y = (window.innerWidth < 760 ? -.15 : .05) + Math.sin(t * .42) * .12 * motion;
-    core.rotation.y = t * .08 * motion;
-    innerSphere.rotation.y = -t * .12 * motion;
-    innerSphere.rotation.x = t * .06 * motion;
-    shell.rotation.y = -t * .045 * motion;
-    orbitA.rotation.z = -.24 + t * .16 * motion;
-    orbitB.rotation.z = .72 - t * .12 * motion;
-    orbitC.rotation.x = 1.45 + Math.sin(t * .3) * .16 * motion;
-    filaments.forEach((line, index) => {
-      line.rotation.y += (.002 + index * .0005) * motion;
-      line.rotation.x = index * .85 + Math.sin(t * .32 + index) * .12 * motion;
+    // Gentle automatic orbit always runs; pointer movement adds responsive tilt.
+    rig.position.y = (window.innerWidth < 760 ? -.15 : .05) + Math.sin(t * .48) * .2;
+    const viewHalfH = Math.tan(THREE.MathUtils.degToRad(camera.fov * .5)) * camera.position.z;
+    const viewHalfW = viewHalfH * camera.aspect;
+    const dotArray = dotGeometry.attributes.position.array;
+    dotSeeds.forEach((dot, i) => {
+      dotArray[i * 3] = dot.x + Math.sin(t * dot.speed + dot.phase) * dot.drift + pointer.x * dot.parallax;
+      dotArray[i * 3 + 1] = dot.y + Math.cos(t * dot.speed * .82 + dot.phase) * dot.drift * 1.25 - pointer.y * dot.parallax;
+      dotArray[i * 3 + 2] = dot.z + Math.sin(t * 1.1 + dot.phase) * .34;
     });
-    satellites.forEach(item => {
-      const angle = item.angle + t * item.speed * motion;
-      item.mesh.position.set(
-        Math.cos(angle) * item.radius,
-        Math.sin(angle) * item.radius * item.tilt,
-        Math.sin(angle * 1.4) * .72
-      );
+    dotGeometry.attributes.position.needsUpdate = true;
+    dotMaterial.opacity = .78 + (Math.sin(t * 2.0) + 1) * .11;
+
+    bots.forEach((bot, index) => {
+      const x = Math.max(-viewHalfW * .88, Math.min(viewHalfW * .88, bot.baseX * Math.min(1, viewHalfW / 5.8)));
+      bot.group.position.x = x + Math.sin(t * bot.speed + bot.phase) * .22 + pointer.x * .12;
+      bot.group.position.y = bot.baseY * Math.min(1, viewHalfH / 3.5) + Math.sin(t * (bot.speed + .28) + bot.phase) * .24 - pointer.y * .08;
+      bot.group.rotation.y = Math.sin(t * .65 + bot.phase) * .28 + pointer.x * .12;
+      bot.group.rotation.z = Math.sin(t * .9 + bot.phase) * .08;
     });
-    const array = particleGeometry.attributes.position.array;
-    seeds.forEach((p, i) => {
-      array[i * 3] = p.x + Math.sin(t * p.speed + p.phase) * .18 + pointer.x * .12;
-      array[i * 3 + 1] = p.y + Math.cos(t * p.speed + p.phase) * .2 - pointer.y * .12;
-      array[i * 3 + 2] = p.z;
-    });
-    particleGeometry.attributes.position.needsUpdate = true;
-    keyLight.position.x = 3 + pointer.x * 1.5 + Math.sin(t * .3) * .6;
-    violetLight.position.y = -2 + pointer.y * 1.2;
+    rig.rotation.y += (pointer.x * .62 + Math.sin(t * .34) * .22 - rig.rotation.y) * .035;
+    rig.rotation.x += (-pointer.y * .48 + Math.cos(t * .28) * .16 - rig.rotation.x) * .035;
+    ringA.rotation.z = -.28 + t * .24;
+    ringA.rotation.x = 1.08 + Math.sin(t * .42) * .16;
+    ringB.rotation.z = .68 - t * .30;
+    ringB.rotation.x = .35 + Math.cos(t * .36) * .20;
+    ringC.rotation.y = -.52 + t * .18;
+    innerOrbit.rotation.z = .1 + t * .2;\n    detailOrbit.rotation.y = -.72 + t * .16;\n    detailOrbit.rotation.z = .42 - t * .12;
+    coolLight.position.x = -5 + Math.sin(t * .45) * 1.4;
+    warmLight.position.y = -5 + Math.cos(t * .38) * 1.2;
+    rimLight.position.x = 5 + Math.cos(t * .32) * 1.2;
     renderer.render(scene, camera);
   }
+  animate();
 
   document.addEventListener("visibilitychange", () => {
     paused = document.hidden;
     if (paused) cancelAnimationFrame(frame);
     else { clock.start(); animate(); }
   });
-  if (!paused) animate();
-})(); 
+})();
 
 // Give the portrait a real perspective tilt and layered depth on pointer movement.
 (function initPortrait3D() {
