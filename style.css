@@ -333,3 +333,38 @@ body::before,body::after{display:none}
     overflow-x:clip;
   }
 }
+
+/* MOBILE: lock the page to the viewport and prevent horizontal drifting */
+@media (max-width: 760px){
+  html{
+    width:100%;
+    max-width:100%;
+    overflow-x:hidden !important;
+    overscroll-behavior-x:none;
+  }
+  body{
+    position:relative;
+    width:100%;
+    max-width:100%;
+    overflow-x:hidden !important;
+    overscroll-behavior-x:none;
+  }
+  #background-3d-canvas{
+    left:0 !important;
+    right:0 !important;
+    width:100% !important;
+    max-width:100% !important;
+    height:100svh;
+    transform:none !important;
+    touch-action:pan-y;
+  }
+  .header,.hero,.section,.footer{
+    width:100%;
+    max-width:100%;
+    overflow-x:clip;
+  }
+  .hero-photo-frame,
+  .hero-photo-frame *{
+    max-width:100%;
+  }
+}
