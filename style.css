@@ -303,3 +303,33 @@ body::before,body::after{display:none}
 @media(prefers-reduced-motion:reduce){
   .hero-profile-photo{transition:none}
 }
+
+
+/* Mobile viewport stability: prevent sideways drift and fixed-background repaint jumps */
+@media (max-width: 760px){
+  html,body{
+    width:100%;
+    max-width:100%;
+    overflow-x:clip;
+    overscroll-behavior-x:none;
+  }
+  body{
+    background-attachment:scroll !important;
+  }
+  #background-3d-canvas{
+    position:fixed;
+    inset:0;
+    width:100%;
+    height:100vh;
+    height:100svh;
+    max-width:100vw;
+    pointer-events:none;
+    transform:translateZ(0);
+    backface-visibility:hidden;
+    contain:strict;
+  }
+  .hero,.section,.footer{
+    max-width:100%;
+    overflow-x:clip;
+  }
+}
