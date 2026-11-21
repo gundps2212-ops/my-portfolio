@@ -303,3 +303,32 @@ body::before,body::after{display:none}
 @media(prefers-reduced-motion:reduce){
   .hero-profile-photo{transition:none}
 }
+
+
+/* ADVANCED SCROLL + MOBILE STABILITY PATCH */
+html{scroll-behavior:smooth;scroll-padding-top:90px}
+body{overflow-x:clip;overscroll-behavior-x:none}
+#background-3d-canvas{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;overflow:hidden}
+.scroll-progress-track{position:fixed;top:0;left:0;width:100%;height:2px;z-index:1200;background:rgba(255,255,255,.035);pointer-events:none}
+.scroll-progress-bar{height:100%;width:0;background:linear-gradient(90deg,#39d8ff,#758cff,#a77bff);box-shadow:0 0 12px rgba(57,216,255,.65);transform-origin:left center}
+@media(max-width:760px){
+  html{scroll-padding-top:78px}
+  body,.hero,.section,.footer{max-width:100%;overflow-x:clip}
+  .hero-container,.container{width:min(100% - 32px,1180px)}
+  .hero-image{min-width:0;width:100%;overflow:visible}
+  .hero-photo-frame{max-width:100%;transform:none!important}
+  .hero-profile-photo{transform:translateZ(12px)!important}
+  .hero-photo-frame .card-one{left:0}
+  .hero-photo-frame .card-two{right:0}
+  #background-3d-canvas{opacity:.78}
+  .reveal{filter:none;will-change:opacity,transform}
+}
+@media(max-width:420px){
+  .hero-photo-frame{width:min(270px,76vw);height:345px}
+  .photo-caption{max-width:90%;white-space:normal;justify-content:center}
+  .floating-card{max-width:120px}
+}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .scroll-progress-bar{transition:none}
+}
