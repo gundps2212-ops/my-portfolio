@@ -324,8 +324,17 @@ document.querySelectorAll(".project-buttons a[href='#']").forEach((link) => {
   }
 
   const pointer={x:0,y:0},target={x:0,y:0},scroll={progress:0};
-  if(finePointer&&!reduceMotion){
-    window.addEventListener("pointermove",e=>{target.x=(e.clientX/window.innerWidth-.5)*2;target.y=(e.clientY/window.innerHeight-.5)*2;},{passive:true});
+  if(!reduceMotion){
+    // Desktop mouse + mobile finger drag both steer the 3D ring.
+    window.addEventListener("pointermove",e=>{
+      if(e.pointerType==="touch" || finePointer){
+        target.x=(e.clientX/window.innerWidth-.5)*2;
+        target.y=(e.clientY/window.innerHeight-.5)*2;
+      }
+    },{passive:true});
+    window.addEventListener("pointerup",e=>{
+      if(e.pointerType==="touch"){target.x*=.35;target.y*=.35;}
+    },{passive:true});
   }
   let scrollFrame=0;
   function updateScroll(){
@@ -369,9 +378,12 @@ document.querySelectorAll(".project-buttons a[href='#']").forEach((link) => {
       bot.group.rotation.y=Math.sin(t*.55+bot.phase)*.22+pointer.x*.05;
     });
     const scrollTilt=scroll.progress-.5;
-    rig.rotation.y+=(pointer.x*.34+scrollTilt*.13+Math.sin(t*.24)*.10-rig.rotation.y)*ease;
-    rig.rotation.x+=(-pointer.y*.24+Math.cos(t*.20)*.08-rig.rotation.x)*ease;
-    rig.position.y=Math.sin(t*.35)*.10+scrollTilt*.12;
+    // A more visible but damped response to vertical mobile scrolling.
+    const scrollStrength=mobile()?0.62:0.24;
+    rig.rotation.y+=(pointer.x*(mobile()?.52:.34)+scrollTilt*scrollStrength+Math.sin(t*.24)*.10-rig.rotation.y)*ease;
+    rig.rotation.x+=(-pointer.y*(mobile()?.40:.24)+scrollTilt*(mobile()?.22:.08)+Math.cos(t*.20)*.08-rig.rotation.x)*ease;
+    rig.position.y=Math.sin(t*.35)*.10+scrollTilt*(mobile()?.34:.12);
+    rig.position.x+=(pointer.x*(mobile()?.22:.08)-rig.position.x)*ease;
     ringA.rotation.z=-.28+t*.16;ringA.rotation.x=1.08+Math.sin(t*.28)*.10;
     ringB.rotation.z=.68-t*.20;ringB.rotation.x=.35+Math.cos(t*.25)*.12;
     ringC.rotation.y=-.52+t*.12;innerOrbit.rotation.z=.1+t*.13;
