@@ -356,17 +356,22 @@ document.querySelectorAll(".project-buttons a[href='#']").forEach((link) => {
   });
 
   // Tiny glowing data particles across the whole screen for a futuristic atmosphere.
-  const dotCount = 1700;
+  const dotCount = 1900;
   const dotPositions = new Float32Array(dotCount * 3);
   const dotSeeds = [];
+  function visibleWorldBounds() {
+    const halfH = Math.tan(THREE.MathUtils.degToRad(camera.fov * .5)) * camera.position.z;
+    return { halfW: halfH * camera.aspect, halfH };
+  }
+  let particleBounds = visibleWorldBounds();
   for (let i = 0; i < dotCount; i++) {
-    const x = (Math.random() - .5) * 20.5;
-    const y = (Math.random() - .5) * 13.5;
+    const x = (Math.random() * 2 - 1) * particleBounds.halfW * 1.12;
+    const y = (Math.random() * 2 - 1) * particleBounds.halfH * 1.12;
     const z = -2.8 - Math.random() * 7.0;
     dotPositions[i * 3] = x;
     dotPositions[i * 3 + 1] = y;
     dotPositions[i * 3 + 2] = z;
-    dotSeeds.push({ x, y, z, phase: Math.random() * Math.PI * 2, speed: .85 + Math.random() * 1.8, drift: .28 + Math.random() * .58, parallax: .28 + Math.random() * .72 });
+    dotSeeds.push({ x, y, z, phase: Math.random() * Math.PI * 2, speed: .85 + Math.random() * 1.8, drift: .18 + Math.random() * .42, parallax: .12 + Math.random() * .32 });
   }
   const dotGeometry = new THREE.BufferGeometry();
   dotGeometry.setAttribute("position", new THREE.BufferAttribute(dotPositions, 3));
@@ -383,10 +388,20 @@ document.querySelectorAll(".project-buttons a[href='#']").forEach((link) => {
     pointer.y = (event.clientY / window.innerHeight - .5) * 2;
   }, { passive: true });
 
+  const dotArrayForResize = dotGeometry.attributes.position.array;
+
   function resize() {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
+    particleBounds = visibleWorldBounds();
+    dotSeeds.forEach((dot, i) => {
+      dot.x = (Math.random() * 2 - 1) * particleBounds.halfW * 1.12;
+      dot.y = (Math.random() * 2 - 1) * particleBounds.halfH * 1.12;
+      dotArrayForResize[i * 3] = dot.x;
+      dotArrayForResize[i * 3 + 1] = dot.y;
+    });
+    dotGeometry.attributes.position.needsUpdate = true;
     const narrow = window.innerWidth < 760;
     rig.position.x = 0;
     rig.scale.setScalar(narrow ? .68 : .98);
