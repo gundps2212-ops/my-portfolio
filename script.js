@@ -251,199 +251,136 @@ document.querySelectorAll(".project-buttons a[href='#']").forEach((link) => {
 });
 
 
-// FULL-PAGE THREE.JS BACKGROUND: premium floating chrome rings
+// FULL-PAGE THREE.JS BACKGROUND — smooth chrome rings + scroll-reactive depth
 (function initPageBackground3D() {
   const canvas = document.getElementById("background-3d-canvas");
-  if (!canvas || !window.THREE) {
-    console.warn("Three.js background unavailable. Check CDN connection.");
-    return;
-  }
+  if (!canvas || !window.THREE) return;
   const THREE = window.THREE;
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
   const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(48, window.innerWidth / window.innerHeight, .1, 100);
-  camera.position.set(0, 0, 10.8);
+  const camera = new THREE.PerspectiveCamera(48, 1, .1, 100);
+  camera.position.set(0, 0, 11.5);
 
-  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.6));
-  renderer.setSize(window.innerWidth, window.innerHeight);
+  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true, powerPreference: "high-performance" });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, window.innerWidth < 760 ? 1.15 : 1.6));
   renderer.setClearColor(0x000000, 0);
   if ("outputEncoding" in renderer) renderer.outputEncoding = THREE.sRGBEncoding;
 
-  scene.add(new THREE.HemisphereLight(0x8795ad, 0x05070c, .62));
-  const keyLight = new THREE.PointLight(0x8995aa, 1.15, 26);
-  keyLight.position.set(4, 5, 7); scene.add(keyLight);
-  const coolLight = new THREE.PointLight(0x345b83, 1.0, 22);
-  coolLight.position.set(-5, 1, 4); scene.add(coolLight);
-  const warmLight = new THREE.PointLight(0x51416f, .72, 20);
-  warmLight.position.set(2, -5, 3); scene.add(warmLight);
-  const rimLight = new THREE.PointLight(0x263d68, .8, 22);
-  rimLight.position.set(5, -2, -1); scene.add(rimLight);
+  scene.add(new THREE.HemisphereLight(0x9aa9c4, 0x05070c, .68));
+  const keyLight = new THREE.PointLight(0x8995aa, 1.2, 28); keyLight.position.set(4, 5, 7); scene.add(keyLight);
+  const coolLight = new THREE.PointLight(0x345b83, 1.0, 22); coolLight.position.set(-5, 1, 4); scene.add(coolLight);
+  const warmLight = new THREE.PointLight(0x51416f, .72, 20); warmLight.position.set(2, -5, 3); scene.add(warmLight);
+  const rimLight = new THREE.PointLight(0x263d68, .8, 22); rimLight.position.set(5, -2, -1); scene.add(rimLight);
 
-  const rig = new THREE.Group();
-  rig.position.set(0, .05, -1.1);
-  scene.add(rig);
+  const rig = new THREE.Group(); scene.add(rig);
+  const chrome = new THREE.MeshPhongMaterial({ color: 0x171d27, specular: 0x8293aa, shininess: 125, emissive: 0x02050a, emissiveIntensity: .08 });
+  const darkChrome = new THREE.MeshPhongMaterial({ color: 0x0b0e16, specular: 0x596078, shininess: 135, emissive: 0x02030a, emissiveIntensity: .06 });
+  const brightChrome = new THREE.MeshPhongMaterial({ color: 0x252d39, specular: 0x9aa9c0, shininess: 135, emissive: 0x03060b, emissiveIntensity: .08 });
+  const ringA = new THREE.Mesh(new THREE.TorusGeometry(2.72,.17,32,260),chrome); ringA.rotation.set(1.08,.25,-.28); rig.add(ringA);
+  const ringB = new THREE.Mesh(new THREE.TorusGeometry(2.08,.13,28,240),brightChrome); ringB.rotation.set(.35,1.02,.68); rig.add(ringB);
+  const ringC = new THREE.Mesh(new THREE.TorusGeometry(3.18,.10,24,260),darkChrome); ringC.rotation.set(1.42,-.52,.2); rig.add(ringC);
+  const innerOrbit = new THREE.Mesh(new THREE.TorusGeometry(1.48,.055,16,220),new THREE.MeshPhongMaterial({color:0x111722,specular:0x68788e,shininess:110,transparent:true,opacity:.96}));
+  innerOrbit.rotation.set(.9,.4,.1); rig.add(innerOrbit);
+  const detailOrbit = new THREE.Mesh(new THREE.TorusGeometry(2.42,.035,12,240),new THREE.MeshPhongMaterial({color:0x101722,specular:0x4b91ad,shininess:145,transparent:true,opacity:.92}));
+  detailOrbit.rotation.set(.62,-.72,.42); rig.add(detailOrbit);
 
-  // Polished liquid-chrome / dark-silver metal, matching the supplied reference.
-  // Dark graphite base + sharp white reflections create real 3D depth (not a flat white ring).
-  const chrome = new THREE.MeshPhongMaterial({
-    color: 0x171d27, specular: 0x68788e, shininess: 105,
-    emissive: 0x02050a, emissiveIntensity: .08
-  });
-  const darkChrome = new THREE.MeshPhongMaterial({
-    color: 0x0b0e16, specular: 0x596078, shininess: 125,
-    emissive: 0x02030a, emissiveIntensity: .06
-  });
-  const brightChrome = new THREE.MeshPhongMaterial({
-    color: 0x252d39, specular: 0x8290a5, shininess: 115,
-    emissive: 0x03060b, emissiveIntensity: .08
-  });
-
-  const ringA = new THREE.Mesh(new THREE.TorusGeometry(2.72, .17, 32, 260), chrome);
-  ringA.rotation.set(1.08, .25, -.28); rig.add(ringA);
-  const ringB = new THREE.Mesh(new THREE.TorusGeometry(2.08, .13, 28, 240), brightChrome);
-  ringB.rotation.set(.35, 1.02, .68); rig.add(ringB);
-  const ringC = new THREE.Mesh(new THREE.TorusGeometry(3.18, .10, 24, 260), darkChrome);
-  ringC.rotation.set(1.42, -.52, .2); rig.add(ringC);
-
-  // A fine inner orbit adds depth without making the page visually busy.
-  const innerOrbit = new THREE.Mesh(
-    new THREE.TorusGeometry(1.48, .055, 16, 220),
-    new THREE.MeshPhongMaterial({ color: 0x111722, specular: 0x68788e, shininess: 100, emissive: 0x02050a, emissiveIntensity: .06, transparent: true, opacity: .96 })
-  );
-  innerOrbit.rotation.set(.9, .4, .1); rig.add(innerOrbit);
-
-  // Extra precision orbit: a slim dark-metal ring with a subtle cyan edge reflection.
-  const detailOrbit = new THREE.Mesh(
-    new THREE.TorusGeometry(2.42, .035, 12, 240),
-    new THREE.MeshPhongMaterial({ color: 0x101722, specular: 0x3d718d, shininess: 135, emissive: 0x03101a, emissiveIntensity: .12, transparent: true, opacity: .9 })
-  );
-  detailOrbit.rotation.set(.62, -.72, .42); rig.add(detailOrbit);
-
-
-  // Small floating helper bots: lightweight 3D characters distributed around the page.
-  const bots = [];
-  const botMetal = new THREE.MeshStandardMaterial({ color: 0x111722, metalness: .68, roughness: .48 });
-  const botDark = new THREE.MeshStandardMaterial({ color: 0x05080e, metalness: .42, roughness: .52 });
-  const botGlow = new THREE.MeshBasicMaterial({ color: 0x16445e });
-  const botPositions = [
-    [-5.5, 3.2, -1.8], [-3.8, 3.0, -2.0], [-1.9, 3.45, -2.2], [0, 3.55, -2.2], [1.9, 3.35, -2.0], [3.8, 3.0, -1.9], [5.5, 2.8, -2.1],
-    [-5.7, 1.0, -1.7], [5.7, .8, -1.8], [-5.7, -.9, -1.8], [5.7, -.8, -1.7],
-    [-5.5, -2.8, -1.9], [-3.7, -3.1, -2.0], [-1.8, -3.4, -2.1], [0, -3.55, -2.2], [1.8, -3.3, -2.0], [3.7, -3.0, -1.9], [5.5, -2.7, -1.8]
-  ];
-  botPositions.forEach((pos, index) => {
-    const bot = new THREE.Group();
-    const body = new THREE.Mesh(new THREE.SphereGeometry(.16, 18, 14), botMetal);
-    body.scale.set(1, 1.12, .82); bot.add(body);
-    const head = new THREE.Mesh(new THREE.SphereGeometry(.12, 18, 14), botDark);
-    head.position.y = .20; bot.add(head);
-    [-.065, .065].forEach(x => {
-      const eye = new THREE.Mesh(new THREE.SphereGeometry(.025, 10, 8), botGlow);
-      eye.position.set(x, .215, .11); bot.add(eye);
-    });
-    const antenna = new THREE.Mesh(new THREE.CylinderGeometry(.009, .013, .10, 8), botMetal);
-    antenna.position.y = .34; bot.add(antenna);
-    const tip = new THREE.Mesh(new THREE.SphereGeometry(.035, 10, 8), botGlow);
-    tip.position.y = .405; bot.add(tip);
-    [-1, 1].forEach(side => {
-      const arm = new THREE.Mesh(new THREE.CylinderGeometry(.025, .025, .14, 10), botMetal);
-      arm.position.set(side * .24, -.02, 0);
-      arm.rotation.z = side * -.35; bot.add(arm);
-    });
-    bot.position.set(...pos);
-    bot.scale.setScalar(.38 + (index % 3) * .045);
-    scene.add(bot);
-    bots.push({ group: bot, baseX: pos[0], baseY: pos[1], phase: index * 1.17, speed: .42 + index * .055 });
+  const bots=[];
+  const botMetal=new THREE.MeshStandardMaterial({color:0x111722,metalness:.68,roughness:.48});
+  const botDark=new THREE.MeshStandardMaterial({color:0x05080e,metalness:.42,roughness:.52});
+  const botGlow=new THREE.MeshBasicMaterial({color:0x16445e});
+  const botPositions=[[-5.5,3.2,-1.8],[-3.8,3,-2],[-1.9,3.45,-2.2],[0,3.55,-2.2],[1.9,3.35,-2],[3.8,3,-1.9],[5.5,2.8,-2.1],[-5.7,1,-1.7],[5.7,.8,-1.8],[-5.7,-.9,-1.8],[5.7,-.8,-1.7],[-5.5,-2.8,-1.9],[-3.7,-3.1,-2],[-1.8,-3.4,-2.1],[0,-3.55,-2.2],[1.8,-3.3,-2],[3.7,-3,-1.9],[5.5,-2.7,-1.8]];
+  botPositions.forEach((pos,index)=>{
+    const bot=new THREE.Group();
+    const body=new THREE.Mesh(new THREE.SphereGeometry(.16,16,12),botMetal); body.scale.set(1,1.12,.82); bot.add(body);
+    const head=new THREE.Mesh(new THREE.SphereGeometry(.12,16,12),botDark); head.position.y=.20; bot.add(head);
+    [-.065,.065].forEach(x=>{const eye=new THREE.Mesh(new THREE.SphereGeometry(.025,8,8),botGlow);eye.position.set(x,.215,.11);bot.add(eye);});
+    const antenna=new THREE.Mesh(new THREE.CylinderGeometry(.009,.013,.10,8),botMetal);antenna.position.y=.34;bot.add(antenna);
+    const tip=new THREE.Mesh(new THREE.SphereGeometry(.035,8,8),botGlow);tip.position.y=.405;bot.add(tip);
+    [-1,1].forEach(side=>{const arm=new THREE.Mesh(new THREE.CylinderGeometry(.025,.025,.14,8),botMetal);arm.position.set(side*.24,-.02,0);arm.rotation.z=side*-.35;bot.add(arm);});
+    bot.position.set(...pos);bot.scale.setScalar(.38+(index%3)*.045);scene.add(bot);
+    bots.push({group:bot,baseX:pos[0],baseY:pos[1],phase:index*1.17,speed:.42+index*.055});
   });
 
-  // Tiny glowing data particles across the whole screen for a futuristic atmosphere.
-  const dotCount = 1700;
-  const dotPositions = new Float32Array(dotCount * 3);
-  const dotSeeds = [];
-  for (let i = 0; i < dotCount; i++) {
-    const x = (Math.random() - .5) * 20.5;
-    const y = (Math.random() - .5) * 13.5;
-    const z = -2.8 - Math.random() * 7.0;
-    dotPositions[i * 3] = x;
-    dotPositions[i * 3 + 1] = y;
-    dotPositions[i * 3 + 2] = z;
-    dotSeeds.push({ x, y, z, phase: Math.random() * Math.PI * 2, speed: .85 + Math.random() * 1.8, drift: .28 + Math.random() * .58, parallax: .28 + Math.random() * .72 });
+  const mobile=()=>window.innerWidth<760;
+  const dotCount=()=>mobile()?620:1500;
+  let dotGeometry,dotMaterial,starDots,dotSeeds=[];
+  function createDots(){
+    if(starDots){scene.remove(starDots);dotGeometry.dispose();dotMaterial.dispose();}
+    const count=dotCount(),positions=new Float32Array(count*3);dotSeeds=[];
+    for(let i=0;i<count;i++){
+      const x=(Math.random()-.5)*20.5,y=(Math.random()-.5)*13.5,z=-2.8-Math.random()*7;
+      positions[i*3]=x;positions[i*3+1]=y;positions[i*3+2]=z;
+      dotSeeds.push({x,y,z,phase:Math.random()*Math.PI*2,speed:.55+Math.random()*1.25,drift:.2+Math.random()*.45,parallax:.25+Math.random()*.55});
+    }
+    dotGeometry=new THREE.BufferGeometry();dotGeometry.setAttribute("position",new THREE.BufferAttribute(positions,3));
+    dotMaterial=new THREE.PointsMaterial({color:0x48cfff,size:mobile()?.052:.064,transparent:true,opacity:.88,sizeAttenuation:true,depthWrite:false,blending:THREE.AdditiveBlending});
+    starDots=new THREE.Points(dotGeometry,dotMaterial);scene.add(starDots);
   }
-  const dotGeometry = new THREE.BufferGeometry();
-  dotGeometry.setAttribute("position", new THREE.BufferAttribute(dotPositions, 3));
-  const dotMaterial = new THREE.PointsMaterial({
-    color: 0x48cfff, size: 0.068, transparent: true, opacity: .92,
-    sizeAttenuation: true, depthWrite: false, blending: THREE.AdditiveBlending
-  });
-  const starDots = new THREE.Points(dotGeometry, dotMaterial);
-  scene.add(starDots);
 
-  const pointer = { x: 0, y: 0 };
-  window.addEventListener("pointermove", event => {
-    pointer.x = (event.clientX / window.innerWidth - .5) * 2;
-    pointer.y = (event.clientY / window.innerHeight - .5) * 2;
-  }, { passive: true });
-
-  function resize() {
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    const narrow = window.innerWidth < 760;
-    rig.position.x = 0;
-    rig.scale.setScalar(narrow ? .68 : .98);
-    rig.position.y = narrow ? -.15 : .05;
+  const pointer={x:0,y:0},target={x:0,y:0},scroll={progress:0};
+  if(finePointer&&!reduceMotion){
+    window.addEventListener("pointermove",e=>{target.x=(e.clientX/window.innerWidth-.5)*2;target.y=(e.clientY/window.innerHeight-.5)*2;},{passive:true});
   }
-  window.addEventListener("resize", resize, { passive: true });
+  let scrollFrame=0;
+  function updateScroll(){
+    scrollFrame=0;
+    const max=Math.max(1,document.documentElement.scrollHeight-window.innerHeight);
+    scroll.progress=window.scrollY/max;
+  }
+  window.addEventListener("scroll",()=>{if(!scrollFrame)scrollFrame=requestAnimationFrame(updateScroll);},{passive:true});
+  updateScroll();
+
+  function resize(){
+    const w=window.innerWidth,h=window.innerHeight;
+    camera.aspect=w/h;camera.position.z=mobile()?12.6:11.5;camera.updateProjectionMatrix();
+    renderer.setSize(w,h,false);
+    rig.scale.setScalar(mobile()?.66:.96);
+    createDots();
+  }
+  let resizeTimer;
+  window.addEventListener("resize",()=>{clearTimeout(resizeTimer);resizeTimer=setTimeout(resize,120);},{passive:true});
   resize();
 
-  const clock = new THREE.Clock();
-  let frame = 0, paused = false;
-  function animate() {
-    if (paused) return;
-    frame = requestAnimationFrame(animate);
-    const t = clock.getElapsedTime();
-
-    // Gentle automatic orbit always runs; pointer movement adds responsive tilt.
-    rig.position.y = (window.innerWidth < 760 ? -.15 : .05) + Math.sin(t * .48) * .2;
-    const viewHalfH = Math.tan(THREE.MathUtils.degToRad(camera.fov * .5)) * camera.position.z;
-    const viewHalfW = viewHalfH * camera.aspect;
-    const dotArray = dotGeometry.attributes.position.array;
-    dotSeeds.forEach((dot, i) => {
-      dotArray[i * 3] = dot.x + Math.sin(t * dot.speed + dot.phase) * dot.drift + pointer.x * dot.parallax;
-      dotArray[i * 3 + 1] = dot.y + Math.cos(t * dot.speed * .82 + dot.phase) * dot.drift * 1.25 - pointer.y * dot.parallax;
-      dotArray[i * 3 + 2] = dot.z + Math.sin(t * 1.1 + dot.phase) * .34;
+  const clock=new THREE.Clock();let frame=0,paused=false;
+  function animate(){
+    if(paused||reduceMotion)return;
+    frame=requestAnimationFrame(animate);
+    const t=clock.getElapsedTime(),dt=Math.min(clock.getDelta(),.04),ease=1-Math.exp(-dt*3.2);
+    pointer.x+=(target.x-pointer.x)*ease;pointer.y+=(target.y-pointer.y)*ease;
+    const halfH=Math.tan(THREE.MathUtils.degToRad(camera.fov*.5))*camera.position.z,halfW=halfH*camera.aspect;
+    const arr=dotGeometry.attributes.position.array;
+    dotSeeds.forEach((d,i)=>{
+      arr[i*3]=d.x+Math.sin(t*d.speed+d.phase)*d.drift+pointer.x*d.parallax*.35;
+      arr[i*3+1]=d.y+Math.cos(t*d.speed*.82+d.phase)*d.drift*1.2-pointer.y*d.parallax*.25;
+      arr[i*3+2]=d.z+Math.sin(t*.7+d.phase)*.22;
     });
-    dotGeometry.attributes.position.needsUpdate = true;
-    dotMaterial.opacity = .78 + (Math.sin(t * 2.0) + 1) * .11;
-
-    bots.forEach((bot, index) => {
-      const x = Math.max(-viewHalfW * .88, Math.min(viewHalfW * .88, bot.baseX * Math.min(1, viewHalfW / 5.8)));
-      bot.group.position.x = x + Math.sin(t * bot.speed + bot.phase) * .22 + pointer.x * .12;
-      bot.group.position.y = bot.baseY * Math.min(1, viewHalfH / 3.5) + Math.sin(t * (bot.speed + .28) + bot.phase) * .24 - pointer.y * .08;
-      bot.group.rotation.y = Math.sin(t * .65 + bot.phase) * .28 + pointer.x * .12;
-      bot.group.rotation.z = Math.sin(t * .9 + bot.phase) * .08;
+    dotGeometry.attributes.position.needsUpdate=true;
+    bots.forEach(bot=>{
+      const x=Math.max(-halfW*.88,Math.min(halfW*.88,bot.baseX*Math.min(1,halfW/5.8)));
+      bot.group.position.x=x+Math.sin(t*bot.speed+bot.phase)*.16+pointer.x*.06;
+      bot.group.position.y=bot.baseY*Math.min(1,halfH/3.5)+Math.sin(t*(bot.speed+.2)+bot.phase)*.18-pointer.y*.04;
+      bot.group.rotation.y=Math.sin(t*.55+bot.phase)*.22+pointer.x*.05;
     });
-    rig.rotation.y += (pointer.x * .62 + Math.sin(t * .34) * .22 - rig.rotation.y) * .035;
-    rig.rotation.x += (-pointer.y * .48 + Math.cos(t * .28) * .16 - rig.rotation.x) * .035;
-    ringA.rotation.z = -.28 + t * .24;
-    ringA.rotation.x = 1.08 + Math.sin(t * .42) * .16;
-    ringB.rotation.z = .68 - t * .30;
-    ringB.rotation.x = .35 + Math.cos(t * .36) * .20;
-    ringC.rotation.y = -.52 + t * .18;
-    innerOrbit.rotation.z = .1 + t * .2;
-    detailOrbit.rotation.y = -.72 + t * .16;
-    detailOrbit.rotation.z = .42 - t * .12;
-    coolLight.position.x = -5 + Math.sin(t * .45) * 1.4;
-    warmLight.position.y = -5 + Math.cos(t * .38) * 1.2;
-    rimLight.position.x = 5 + Math.cos(t * .32) * 1.2;
-    renderer.render(scene, camera);
+    const scrollTilt=scroll.progress-.5;
+    rig.rotation.y+=(pointer.x*.34+scrollTilt*.13+Math.sin(t*.24)*.10-rig.rotation.y)*ease;
+    rig.rotation.x+=(-pointer.y*.24+Math.cos(t*.20)*.08-rig.rotation.x)*ease;
+    rig.position.y=Math.sin(t*.35)*.10+scrollTilt*.12;
+    ringA.rotation.z=-.28+t*.16;ringA.rotation.x=1.08+Math.sin(t*.28)*.10;
+    ringB.rotation.z=.68-t*.20;ringB.rotation.x=.35+Math.cos(t*.25)*.12;
+    ringC.rotation.y=-.52+t*.12;innerOrbit.rotation.z=.1+t*.13;
+    detailOrbit.rotation.y=-.72+t*.10;detailOrbit.rotation.z=.42-t*.08;
+    coolLight.position.x=-5+Math.sin(t*.35)*1.2;warmLight.position.y=-5+Math.cos(t*.3);
+    renderer.render(scene,camera);
   }
-  animate();
-
-  document.addEventListener("visibilitychange", () => {
-    paused = document.hidden;
-    if (paused) cancelAnimationFrame(frame);
-    else { clock.start(); animate(); }
+  if(!reduceMotion)animate();
+  else renderer.render(scene,camera);
+  document.addEventListener("visibilitychange",()=>{
+    paused=document.hidden;
+    if(paused)cancelAnimationFrame(frame);
+    else if(!reduceMotion){clock.start();animate();}
   });
+  window.addEventListener("pagehide",()=>{cancelAnimationFrame(frame);renderer.dispose();});
 })();
 
 // Give the portrait a real perspective tilt and layered depth on pointer movement.
